@@ -1,0 +1,6 @@
+package log;
+
+message logMessage {
+  required int32 number = 1;
+  optional string message = 2;
+}

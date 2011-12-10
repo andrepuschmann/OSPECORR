@@ -1,0 +1,33 @@
+#
+# SYSTEM CONFIGURATION FILE
+# #########################
+#
+# purpose: definition of intercomponent communication relations
+# 
+
+
+#
+# component definitions:
+# - each component needs to define:
+#    - its name
+#    -  a list of gates
+# - every gate consists of a name mapped to a type 
+#   [pub, sub, req, rep]
+#
+
+components:
+
+   - name: examplePublisher
+     gates:
+      - log: pub
+
+   - name: exampleSubscriber
+     gates:
+      - log: sub
+#
+# component connections (component_a.gate_x -- component_b.gate_y)
+#
+
+connections:
+
+   - [ examplePublisher.log,   exampleSubscriber.log ]
