@@ -1,25 +1,43 @@
+# -*- coding: UTF-8 -*-
+#
+#   This file is part of OSPECOR².
+#
+#   OSPECOR² is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   OSPECOR² is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with OSPECOR².  If not, see <http://www.gnu.org/licenses/>.
+#
+#   Copyright 2011 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
+#
+
 from PyQt4.QtCore import Qt, SIGNAL
 from PyQt4.QtGui import *
-from gui_auto import Ui_Form
-from listener import ListenerTask
-#from spectrum import DataHolder
-#from spectrum import testClass
+from PyQt4 import QtGui, uic
 from PyQt4 import Qwt5 as Qwt
 from PyQt4 import Qt
-
 from PyQt4.Qwt5.anynumpy import *
-
-# protocol buffers
-import nodecontroller_pb2
-import application_pb2
-
-import matplotlib
+#import matplotlib
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 from matplotlib.figure import Figure
 import numpy
-
 import time
+
+# import own classes
+from listener import ListenerTask
+
+# protocol buffers
+#import nodecontroller_pb2
+#import application_pb2
+
 
 
 class DataPlot(Qwt.QwtPlot):
@@ -94,59 +112,64 @@ class FftPlot(Qwt.QwtPlot):
         self.replot()
 
 
-class Window(QWidget, Ui_Form):
-              
+class mainDialog(QtGui.QDialog):
+    # create listener objects
     listener = ListenerTask(None,'ipc:///tmp/simplesense_data.pipe')
-    listenerApplication = ListenerTask(None,'ipc:///tmp/scl_application_qos.pipe')
+    listenerApplication = ListenerTask(None,'ipc:///tmp/scl_application_qos.pipe')    
     
-    #listener 
-    
-    def __init__(self, parent = None):
-        QWidget.__init__(self, parent)
-        self.setupUi(self)
-        self.listener.start()
-        self.listenerApplication.start()
+    def __init__(self):
+        QtGui.QDialog.__init__(self)
+
+        # Set up the user interface from Designer.
+        self.ui = uic.loadUi("gui.ui")
+        self.ui.show()
         
-        self.plot = FftPlot()       
-        self.plot.resize(620, 440)
-        self.plot.setParent(self.qwtWidget)
-        self.dpi = 100
-        self.fig = Figure((6.5, 4.0), dpi=self.dpi)
-        self.canvas = FigureCanvas(self.fig)
-        self.canvas.setParent(self.mplWidget)
-        self.axes = self.fig.add_subplot(111)
-        self.mpl_toolbar = NavigationToolbar(self.canvas, self.mplToolbar)
-        self.testButton.clicked.connect(self.toggleChannelColors)
-        self.clearButton.clicked.connect(self.clearButtonClicked)
-        self.closeButton.clicked.connect(self.quitWindow)
-        self.pauseButton.clicked.connect(self.pauseButtonClicked)
+        # setup GUI slots and signals
+        self.ui.plot = FftPlot()       
+        self.ui.plot.resize(620, 440)
+        self.ui.plot.setParent(self.ui.qwtWidget)
+        self.ui.dpi = 100
+        self.ui.fig = Figure((6.5, 4.0), dpi=self.ui.dpi)
+        self.ui.canvas = FigureCanvas(self.ui.fig)
+        self.ui.canvas.setParent(self.ui.mplWidget)
+        self.ui.axes = self.ui.fig.add_subplot(111)
+        self.ui.mpl_toolbar = NavigationToolbar(self.ui.canvas, self.ui.mplToolbar)
+        self.ui.testButton.clicked.connect(self.toggleChannelColors)
+        self.ui.clearButton.clicked.connect(self.clearButtonClicked)
+        self.ui.closeButton.clicked.connect(self.quitWindow)
+        self.ui.pauseButton.clicked.connect(self.pauseButtonClicked)
+        self.ui.lastChannel = 0 # to reset last channel
+        self.paused = False
+        
+        # connect listener
         self.listener.recvSignal.connect(self.updateGui)
         self.listenerApplication.recvSignal.connect(self.updateGuiApplication)
-        self.lastChannel = 0 # to reset last channel
-        self.paused = False
-        #QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cleanlooks'))
-    
-    def toggleChannelColors(self):
-        self.statusChannel1.setStyleSheet("background-color:rgb(0,170,0);");
-        self.statusChannel2.setStyleSheet("background-color:rgb(255,140,0);");
-        self.statusChannel3.setStyleSheet("background-color:rgb(255,0,0);");
-        self.statusChannel4.setStyleSheet("background-color:rgb(0,170,0);");
-        self.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        print "Hello, World!"
         
+        # start listener threads
+        self.listener.start()
+        self.listenerApplication.start()
+
     def pauseButtonClicked(self):
         self.paused = not self.paused
         label = "Resume" if self.paused else "Pause"
-        self.pauseButton.setText(label)
+        self.ui.pauseButton.setText(label)
+
+    def toggleChannelColors(self):
+        self.ui.statusChannel1.setStyleSheet("background-color:rgb(0,170,0);");
+        self.ui.statusChannel2.setStyleSheet("background-color:rgb(255,140,0);");
+        self.ui.statusChannel3.setStyleSheet("background-color:rgb(255,0,0);");
+        self.ui.statusChannel4.setStyleSheet("background-color:rgb(0,170,0);");
+        self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        print "Hello, World!"
 
     def clearButtonClicked(self):
-        self.statusChannel1.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.statusChannel2.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.statusChannel3.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.statusChannel4.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.currentChannel.setText('none')
-        self.messageLog.clear()
+        self.ui.statusChannel1.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        self.ui.statusChannel2.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        self.ui.statusChannel3.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        self.ui.statusChannel4.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        self.ui.currentChannel.setText('none')
+        self.ui.messageLog.clear()
     
     def updateGui(self):
         statusUpdate = nodecontroller_pb2.statusUpdate()
@@ -165,24 +188,24 @@ class Window(QWidget, Ui_Form):
         
         # this is a bad hack to grey out the former channel
         if (self.lastChannel != statusUpdate.channel):
-             objectName = "self.statusChannel" + str(self.lastChannel + 1) # channel map starts with zero
+             objectName = "self.ui.statusChannel" + str(self.lastChannel + 1) # channel map starts with zero
              objectHandle = eval(objectName)
              objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
         self.lastChannel = statusUpdate.channel
         
         # update message log
         if statusUpdate.statusMessage:
-            self.messageLog.append(statusUpdate.statusMessage)
+            self.ui.messageLog.append(statusUpdate.statusMessage)
         
         # label for current channel
-        self.currentChannel.setText(str(statusUpdate.channel + 1) + ' (' + statusUpdate.description + ')')
+        self.ui.currentChannel.setText(str(statusUpdate.channel + 1) + ' (' + statusUpdate.description + ')')
         
         # fft plot
         if statusUpdate.fft_bin:
             if not self.paused:
                 fft = numpy.array(statusUpdate.fft_bin._values)
                 # pyqwt display
-                self.plot.plotFft(fft)
+                self.ui.plot.plotFft(fft)
                 
                 # matplotlib display
                 #self.axes.set_axis_bgcolor('black')
@@ -198,10 +221,12 @@ class Window(QWidget, Ui_Form):
         requirements.ParseFromString(self.listenerApplication.string) # fill protobuf, string is stored in listener object
         
         # set gui
-        self.dataRateValue.setText(str(requirements.dataRate) + ' kB/s')
-        self.delayValue.setText(str(requirements.delay) + ' ms')
-        self.losslessValue.setChecked(requirements.featureLossless)
+        self.ui.dataRateValue.setText(str(requirements.dataRate) + ' kB/s')
+        self.ui.delayValue.setText(str(requirements.delay) + ' ms')
+        self.ui.losslessValue.setChecked(requirements.featureLossless)
     
     def quitWindow(self):
-        self.listener.stop() # ask listener thread to stop
+        # ask listener thread to stop
+        self.listener.stop()
+        self.listenerApplication.stop()
         self.close()
