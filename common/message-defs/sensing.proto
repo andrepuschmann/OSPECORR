@@ -1,0 +1,23 @@
+package sensing;
+
+message fastSensingResult {
+  required float rssi = 1;
+}
+
+message fineSensingResult {
+  repeated float fft_bin = 1;
+}
+
+message chStatusUpdate {
+  required int32 channel = 1;
+  optional string description = 2;
+
+  enum statusType {
+    FREE = 0;
+    SU_BUSY = 1;
+    PU_BUSY = 2;
+  }
+
+  required statusType currentStatus = 3;  
+  optional string statusMessage = 4;
+}
