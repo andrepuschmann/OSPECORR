@@ -33,11 +33,7 @@ import time
 
 # import own classes
 from listener import ListenerTask
-
-# protocol buffers
-#import nodecontroller_pb2
-#import application_pb2
-
+import sensing_pb2
 
 
 class DataPlot(Qwt.QwtPlot):
@@ -114,8 +110,8 @@ class FftPlot(Qwt.QwtPlot):
 
 class mainDialog(QtGui.QDialog):
     # create listener objects
-    listener = ListenerTask(None,'ipc:///tmp/simplesense_data.pipe')
-    listenerApplication = ListenerTask(None,'ipc:///tmp/scl_application_qos.pipe')    
+    listenerFastSensing = ListenerTask(None,'pySysMoCo', 'fastSensingResult')
+    #listenerApplication = ListenerTask(None,'ipc:///tmp/scl_application_qos.pipe')    
     
     def __init__(self):
         QtGui.QDialog.__init__(self)
@@ -142,12 +138,12 @@ class mainDialog(QtGui.QDialog):
         self.paused = False
         
         # connect listener
-        self.listener.recvSignal.connect(self.updateGui)
-        self.listenerApplication.recvSignal.connect(self.updateGuiApplication)
+        self.listenerFastSensing.recvSignal.connect(self.updateFastSensing)
+        #self.listenerApplication.recvSignal.connect(self.updateGuiApplication)
         
         # start listener threads
-        self.listener.start()
-        self.listenerApplication.start()
+        self.listenerFastSensing.start()
+        #self.listenerApplication.start()
 
     def pauseButtonClicked(self):
         self.paused = not self.paused
@@ -170,6 +166,13 @@ class mainDialog(QtGui.QDialog):
         self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         self.ui.currentChannel.setText('none')
         self.ui.messageLog.clear()
+        
+    def updateFastSensing(self):
+        result = sensing_pb2.fastSensingResult()
+        result.ParseFromString(self.listenerFastSensing.string) # fill protobuf, string is stored in listener object
+        
+        # update gui
+        self.ui.rssiValue.setText(str(result.rssi) + ' dBm')
     
     def updateGui(self):
         statusUpdate = nodecontroller_pb2.statusUpdate()
@@ -227,6 +230,6 @@ class mainDialog(QtGui.QDialog):
     
     def quitWindow(self):
         # ask listener thread to stop
-        self.listener.stop()
-        self.listenerApplication.stop()
+        self.listenerFastSensing.stop()
+        #self.listenerApplication.stop()
         self.close()

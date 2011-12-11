@@ -23,6 +23,7 @@ import time
 import threading
 import traceback
 import sys
+import scl
 import zmq
 
 from google.protobuf import message
@@ -31,12 +32,11 @@ class ListenerTask(threading.Thread, QtCore.QObject):
     """ Listerner Task is server thread """
     _stop = threading.Event()
     recvSignal = QtCore.pyqtSignal()
-    context = zmq.Context(1)
     
-    def __init__(self, parent=None, address=None): #add type as parameter too
+    def __init__(self, parent=None, component=None, gate=None):
         QtCore.QObject.__init__(self)
-        self.zmqAddress = str(address)
-        print self.zmqAddress
+        self.component = str(component)
+        self.gate = str(gate)
         threading.Thread.__init__ (self)
         _stop = threading.Event()
 
@@ -48,18 +48,14 @@ class ListenerTask(threading.Thread, QtCore.QObject):
         
     def run(self):
         """ server routine """
-        print "listener thread startet"
+        print self.component + ": " + self.gate + ": listener thread startet"
         
         # Prepare our context and Sockets
-        context = zmq.Context(1)
-        
-        # Socket to talk to clients
-        socket = self.context.socket(zmq.SUB)
-        socket.connect(self.zmqAddress)
-        socket.setsockopt(zmq.SUBSCRIBE,'')
+        map = scl.generate_map(self.component)
+        socket = map[self.gate]
         
         while not self.stopped():
-            # non-blocking recv to allow pysense to shutdown
+            # non-blocking recv to allow app to shutdown
             try:
                 string = socket.recv(zmq.NOBLOCK)
                 self.string = string # store received string
@@ -69,4 +65,4 @@ class ListenerTask(threading.Thread, QtCore.QObject):
                     pass
                 else:
                     raise
-            time.sleep(0.1)
+            #time.sleep(0.1)
