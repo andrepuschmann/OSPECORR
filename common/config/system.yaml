@@ -17,17 +17,20 @@
 
 components:
 
+   - name: pySysMoCo
+     gates:
+      - fastSensingResult: sub
+#      - fineSensingResult: sub
+#      - chStatusUpdate: sub
+
    - name: examplePublisher
      gates:
-      - log: pub
+      - fastSensingResult: pub
 
-   - name: exampleSubscriber
-     gates:
-      - log: sub
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
 #
 
 connections:
 
-   - [ examplePublisher.log,   exampleSubscriber.log ]
+   - [ pySysMoCo.fastSensingResult,   examplePublisher.fastSensingResult ]

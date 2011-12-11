@@ -1,1 +1,2 @@
 ADD_SUBDIRECTORY (pySysMoCo)
+ADD_SUBDIRECTORY (examplePublisher)
