@@ -1,0 +1,7 @@
+package application;
+
+message qosRequirements {
+  required int32 dataRate = 1;
+  required int32 delay = 2;
+  required bool featureLossless = 3;
+}
