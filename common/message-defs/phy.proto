@@ -1,4 +1,4 @@
-package sensing;
+package phy;
 
 message fastSensingResult {
   required float rssi = 1;

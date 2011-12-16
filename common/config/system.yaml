@@ -29,9 +29,16 @@ components:
      gates:
       - fastSensingResult: pub
       
+
+   # start of Iris components
+   
    - name: FftSensingController
      gates:
       - fineSensingResult: pub
+      - chStatusUpdate: pub
+
+   - name: HandoverController
+     gates:
       - chStatusUpdate: pub
 
    - name: TrafficAnalyzerComponent
@@ -49,5 +56,6 @@ connections:
    - [ pySysMoCo.fastSensingResult,   examplePublisher.fastSensingResult ]
    - [ pySysMoCo.fineSensingResult,   FftSensingController.fineSensingResult ]
    - [ pySysMoCo.chStatusUpdate,      FftSensingController.chStatusUpdate ]
+   - [ pySysMoCo.chStatusUpdate,      HandoverController.chStatusUpdate ]
    - [ pySysMoCo.qosRequirements,     TrafficAnalyzerComponent.qosRequirements ]
    - [ pySysMoCo.linkStatistics,      TrafficAnalyzerComponent.linkStatistics ]
