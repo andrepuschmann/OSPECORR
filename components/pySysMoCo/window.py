@@ -34,6 +34,7 @@ import time
 # import own classes
 from listener import ListenerTask
 import sensing_pb2
+import application_pb2
 
 
 class DataPlot(Qwt.QwtPlot):
@@ -113,6 +114,8 @@ class mainDialog(QtGui.QDialog):
     listenerFastSensing = ListenerTask(None,'pySysMoCo', 'fastSensingResult')
     listenerFineSensing = ListenerTask(None,'pySysMoCo', 'fineSensingResult')
     listenerChStatusUpdate = ListenerTask(None,'pySysMoCo', 'chStatusUpdate')
+    listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
+    listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
     
     
     def __init__(self):
@@ -143,14 +146,15 @@ class mainDialog(QtGui.QDialog):
         self.listenerFastSensing.recvSignal.connect(self.updateFastSensing)
         self.listenerFineSensing.recvSignal.connect(self.updateFineSensing)
         self.listenerChStatusUpdate.recvSignal.connect(self.updateChannelStatus)
-        
-        
-        #self.listenerApplication.recvSignal.connect(self.updateGuiApplication)
+        self.listenerQosReq.recvSignal.connect(self.updateQosReq)
+        self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
         
         # start listener threads
         self.listenerFastSensing.start()
         self.listenerFineSensing.start()
         self.listenerChStatusUpdate.start()
+        self.listenerQosReq.start()
+        self.listenerLinkStats.start()
         
 
     def pauseButtonClicked(self):
@@ -232,18 +236,32 @@ class mainDialog(QtGui.QDialog):
         self.ui.currentChannel.setText(str(update.channel + 1) + ' (' + update.description + ')')
 
 
-    def updateGuiApplication(self):
+    def updateQosReq(self):
         requirements = application_pb2.qosRequirements()
-        requirements.ParseFromString(self.listenerApplication.string) # fill protobuf, string is stored in listener object
+        requirements.ParseFromString(self.listenerQosReq.string)
         
         # set gui
         self.ui.dataRateValue.setText(str(requirements.dataRate) + ' kB/s')
         self.ui.delayValue.setText(str(requirements.delay) + ' ms')
         self.ui.losslessValue.setChecked(requirements.featureLossless)
+        
+        
+    def updateLinkStats(self):
+        stats = application_pb2.linkStatistics()
+        stats.ParseFromString(self.listenerLinkStats.string)
+        
+        # set gui
+        self.ui.upwardThroughputValue.setText(str(format(stats.upwardThroughput, '.2f')) + ' kbit/s')
+        self.ui.upwardPacketSizeValue.setText(str(stats.upwardPacketSize) + ' byte')
+        self.ui.downwardThroughputValue.setText(str(format(stats.downwardThroughput, '.2f')) + ' kbit/s')
+        self.ui.downwardPacketSizeValue.setText(str(stats.downwardPacketSize) + ' byte')
+        
     
     def quitWindow(self):
         # ask listener thread to stop
         self.listenerFastSensing.stop()
         self.listenerFineSensing.stop()
         self.listenerChStatusUpdate.stop()
+        self.listenerQosReq.stop()
+        self.listenerLinkStats.stop()
         self.close()

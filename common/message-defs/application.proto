@@ -5,3 +5,10 @@ message qosRequirements {
   required int32 delay = 2;
   required bool featureLossless = 3;
 }
+
+message linkStatistics {
+  required float downwardThroughput = 1;
+  required float upwardThroughput = 2;
+  required int32 downwardPacketSize = 3;
+  required int32 upwardPacketSize = 4;
+}

@@ -22,6 +22,8 @@ components:
       - fastSensingResult: sub
       - fineSensingResult: sub
       - chStatusUpdate: sub
+      - qosRequirements: sub
+      - linkStatistics: sub
 
    - name: examplePublisher
      gates:
@@ -32,6 +34,12 @@ components:
       - fineSensingResult: pub
       - chStatusUpdate: pub
 
+   - name: TrafficAnalyzerComponent
+     gates:
+      - qosRequirements: pub
+      - linkStatistics: pub
+ 
+
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
 #
@@ -41,3 +49,5 @@ connections:
    - [ pySysMoCo.fastSensingResult,   examplePublisher.fastSensingResult ]
    - [ pySysMoCo.fineSensingResult,   FftSensingController.fineSensingResult ]
    - [ pySysMoCo.chStatusUpdate,      FftSensingController.chStatusUpdate ]
+   - [ pySysMoCo.qosRequirements,     TrafficAnalyzerComponent.qosRequirements ]
+   - [ pySysMoCo.linkStatistics,      TrafficAnalyzerComponent.linkStatistics ]
