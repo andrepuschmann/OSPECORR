@@ -111,7 +111,9 @@ class FftPlot(Qwt.QwtPlot):
 class mainDialog(QtGui.QDialog):
     # create listener objects
     listenerFastSensing = ListenerTask(None,'pySysMoCo', 'fastSensingResult')
-    #listenerApplication = ListenerTask(None,'ipc:///tmp/scl_application_qos.pipe')    
+    listenerFineSensing = ListenerTask(None,'pySysMoCo', 'fineSensingResult')
+    listenerChStatusUpdate = ListenerTask(None,'pySysMoCo', 'chStatusUpdate')
+    
     
     def __init__(self):
         QtGui.QDialog.__init__(self)
@@ -134,16 +136,22 @@ class mainDialog(QtGui.QDialog):
         self.ui.clearButton.clicked.connect(self.clearButtonClicked)
         self.ui.closeButton.clicked.connect(self.quitWindow)
         self.ui.pauseButton.clicked.connect(self.pauseButtonClicked)
-        self.ui.lastChannel = 0 # to reset last channel
+        self.lastChannel = 0 # to reset last channel
         self.paused = False
         
         # connect listener
         self.listenerFastSensing.recvSignal.connect(self.updateFastSensing)
+        self.listenerFineSensing.recvSignal.connect(self.updateFineSensing)
+        self.listenerChStatusUpdate.recvSignal.connect(self.updateChannelStatus)
+        
+        
         #self.listenerApplication.recvSignal.connect(self.updateGuiApplication)
         
         # start listener threads
         self.listenerFastSensing.start()
-        #self.listenerApplication.start()
+        self.listenerFineSensing.start()
+        self.listenerChStatusUpdate.start()
+        
 
     def pauseButtonClicked(self):
         self.paused = not self.paused
@@ -173,40 +181,15 @@ class mainDialog(QtGui.QDialog):
         
         # update gui
         self.ui.rssiValue.setText(str(result.rssi) + ' dBm')
-    
-    def updateGui(self):
-        statusUpdate = nodecontroller_pb2.statusUpdate()
-        statusUpdate.ParseFromString(self.listener.string) # fill protobuf, string is stored in listener object
         
-        # update channel activity
-        objectName = "self.statusChannel" + str(statusUpdate.channel + 1) # channel map starts with zero
-        # print objectName
-        objectHandle = eval(objectName)
-        if statusUpdate.currentStatus == statusUpdate.FREE:
-            objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
-        elif statusUpdate.currentStatus == statusUpdate.SU_BUSY:
-            objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
-        elif statusUpdate.currentStatus == statusUpdate.PU_BUSY:
-            objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
+    def updateFineSensing(self):
+        result = sensing_pb2.fineSensingResult()
+        result.ParseFromString(self.listenerFineSensing.string) # fill protobuf, string is stored in listener object
         
-        # this is a bad hack to grey out the former channel
-        if (self.lastChannel != statusUpdate.channel):
-             objectName = "self.ui.statusChannel" + str(self.lastChannel + 1) # channel map starts with zero
-             objectHandle = eval(objectName)
-             objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
-        self.lastChannel = statusUpdate.channel
-        
-        # update message log
-        if statusUpdate.statusMessage:
-            self.ui.messageLog.append(statusUpdate.statusMessage)
-        
-        # label for current channel
-        self.ui.currentChannel.setText(str(statusUpdate.channel + 1) + ' (' + statusUpdate.description + ')')
-        
-        # fft plot
-        if statusUpdate.fft_bin:
+        # update fft plot
+        if result.fft_bin:
             if not self.paused:
-                fft = numpy.array(statusUpdate.fft_bin._values)
+                fft = numpy.array(result.fft_bin._values)
                 # pyqwt display
                 self.ui.plot.plotFft(fft)
                 
@@ -218,6 +201,36 @@ class mainDialog(QtGui.QDialog):
                 #self.axes.set_ylabel('Power in dBm')
                 #self.axes.axis([0, 512, -140, -70])
                 #self.canvas.draw()
+    
+    def updateChannelStatus(self):
+        update = sensing_pb2.chStatusUpdate()
+        update.ParseFromString(self.listenerChStatusUpdate.string) # fill protobuf, string is stored in listener object
+        
+        # update channel activity
+        objectName = "self.ui.statusChannel" + str(update.channel + 1) # channel map starts with zero
+        # print objectName
+        objectHandle = eval(objectName)
+        if update.currentStatus == update.FREE:
+            objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
+        elif update.currentStatus == update.SU_BUSY:
+            objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
+        elif update.currentStatus == update.PU_BUSY:
+            objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
+        
+        # this is a bad hack to grey out the former channel
+        if (self.lastChannel != update.channel):
+             objectName = "self.ui.statusChannel" + str(self.lastChannel + 1) # channel map starts with zero
+             objectHandle = eval(objectName)
+             objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
+        self.lastChannel = update.channel
+        
+        # update message log
+        if update.statusMessage:
+            self.ui.messageLog.append(update.statusMessage)
+        
+        # label for current channel
+        self.ui.currentChannel.setText(str(update.channel + 1) + ' (' + update.description + ')')
+
 
     def updateGuiApplication(self):
         requirements = application_pb2.qosRequirements()
@@ -231,5 +244,6 @@ class mainDialog(QtGui.QDialog):
     def quitWindow(self):
         # ask listener thread to stop
         self.listenerFastSensing.stop()
-        #self.listenerApplication.stop()
+        self.listenerFineSensing.stop()
+        self.listenerChStatusUpdate.stop()
         self.close()

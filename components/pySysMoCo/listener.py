@@ -65,4 +65,4 @@ class ListenerTask(threading.Thread, QtCore.QObject):
                     pass
                 else:
                     raise
-            #time.sleep(0.1)
+            time.sleep(0.1)
