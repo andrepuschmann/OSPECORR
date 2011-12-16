@@ -36,79 +36,6 @@ from listener import ListenerTask
 import sensing_pb2
 import application_pb2
 
-
-class DataPlot(Qwt.QwtPlot):
-
-    def __init__(self, *args):
-        Qwt.QwtPlot.__init__(self, *args)
-
-        self.setCanvasBackground(Qt.Qt.white)
-        self.alignScales()
-
-        # Initialize data
-        self.x = arange(0.0, 100.1, 0.5)
-        self.y = zeros(len(self.x), Float)
-        self.z = zeros(len(self.x), Float)
-
-        self.setTitle("A Moving QwtPlot Demonstration")
-        self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.BottomLegend);
-
-        self.curveR = Qwt.QwtPlotCurve("Data Moving Right")
-        self.curveR.attach(self)
-        self.curveL = Qwt.QwtPlotCurve("Data Moving Left")
-        self.curveL.attach(self)
-
-        self.curveL.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
-                                        Qt.QBrush(),
-                                        Qt.QPen(Qt.Qt.yellow),
-                                        Qt.QSize(7, 7)))
-
-        self.curveR.setPen(Qt.QPen(Qt.Qt.red))
-        self.curveL.setPen(Qt.QPen(Qt.Qt.blue))
-
-        mY = Qwt.QwtPlotMarker()
-        mY.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
-        mY.setLineStyle(Qwt.QwtPlotMarker.HLine)
-        mY.setYValue(0.0)
-        mY.attach(self)
-
-        self.setAxisTitle(Qwt.QwtPlot.xBottom, "Time (seconds)")
-        self.setAxisTitle(Qwt.QwtPlot.yLeft, "Values")
-    
-        self.startTimer(50)
-        self.phase = 0.0
-        
-    def alignScales(self):
-        self.canvas().setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Plain)
-        self.canvas().setLineWidth(1)
-        for i in range(Qwt.QwtPlot.axisCnt):
-            scaleWidget = self.axisWidget(i)
-            if scaleWidget:
-                scaleWidget.setMargin(0)
-            scaleDraw = self.axisScaleDraw(i)
-            if scaleDraw:
-                scaleDraw.enableComponent(
-                    Qwt.QwtAbstractScaleDraw.Backbone, False)
-
-class FftPlot(Qwt.QwtPlot):
-
-    def __init__(self, parent=None):
-        Qwt.QwtPlot.__init__(self)
-        self.setAxisTitle(Qwt.QwtPlot.xBottom, 'Frequency [Hz]');
-        self.setAxisTitle(Qwt.QwtPlot.yLeft, "Power in dBm")
-        self.setCanvasBackground(Qt.Qt.black)
-        self.spectrumCurve = Qwt.QwtPlotCurve("FFT")
-        self.spectrumCurve.attach(self)
-        self.spectrumCurve.setPen(Qt.QPen(Qt.Qt.blue))
-        self.spectrumCurve.setYAxis(Qwt.QwtPlot.yLeft)
-        self.setAxisScale( Qwt.QwtPlot.xBottom, 0.0, 512.0)
-        self.setAxisScale( Qwt.QwtPlot.yLeft, -140.0, -60.0)        
-    
-    def plotFft(self, values):
-        self.spectrumCurve.setData(range(len(values)), values)
-        self.replot()
-
-
 class mainDialog(QtGui.QDialog):
     # create listener objects
     listenerFastSensing = ListenerTask(None,'pySysMoCo', 'fastSensingResult')
@@ -265,3 +192,76 @@ class mainDialog(QtGui.QDialog):
         self.listenerQosReq.stop()
         self.listenerLinkStats.stop()
         self.close()
+
+
+
+class DataPlot(Qwt.QwtPlot):
+
+    def __init__(self, *args):
+        Qwt.QwtPlot.__init__(self, *args)
+
+        self.setCanvasBackground(Qt.Qt.white)
+        self.alignScales()
+
+        # Initialize data
+        self.x = arange(0.0, 100.1, 0.5)
+        self.y = zeros(len(self.x), Float)
+        self.z = zeros(len(self.x), Float)
+
+        self.setTitle("A Moving QwtPlot Demonstration")
+        self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.BottomLegend);
+
+        self.curveR = Qwt.QwtPlotCurve("Data Moving Right")
+        self.curveR.attach(self)
+        self.curveL = Qwt.QwtPlotCurve("Data Moving Left")
+        self.curveL.attach(self)
+
+        self.curveL.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
+                                        Qt.QBrush(),
+                                        Qt.QPen(Qt.Qt.yellow),
+                                        Qt.QSize(7, 7)))
+
+        self.curveR.setPen(Qt.QPen(Qt.Qt.red))
+        self.curveL.setPen(Qt.QPen(Qt.Qt.blue))
+
+        mY = Qwt.QwtPlotMarker()
+        mY.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
+        mY.setLineStyle(Qwt.QwtPlotMarker.HLine)
+        mY.setYValue(0.0)
+        mY.attach(self)
+
+        self.setAxisTitle(Qwt.QwtPlot.xBottom, "Time (seconds)")
+        self.setAxisTitle(Qwt.QwtPlot.yLeft, "Values")
+    
+        self.startTimer(50)
+        self.phase = 0.0
+        
+    def alignScales(self):
+        self.canvas().setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Plain)
+        self.canvas().setLineWidth(1)
+        for i in range(Qwt.QwtPlot.axisCnt):
+            scaleWidget = self.axisWidget(i)
+            if scaleWidget:
+                scaleWidget.setMargin(0)
+            scaleDraw = self.axisScaleDraw(i)
+            if scaleDraw:
+                scaleDraw.enableComponent(
+                    Qwt.QwtAbstractScaleDraw.Backbone, False)
+
+class FftPlot(Qwt.QwtPlot):
+
+    def __init__(self, parent=None):
+        Qwt.QwtPlot.__init__(self)
+        self.setAxisTitle(Qwt.QwtPlot.xBottom, 'Frequency [Hz]');
+        self.setAxisTitle(Qwt.QwtPlot.yLeft, "Power in dBm")
+        self.setCanvasBackground(Qt.Qt.black)
+        self.spectrumCurve = Qwt.QwtPlotCurve("FFT")
+        self.spectrumCurve.attach(self)
+        self.spectrumCurve.setPen(Qt.QPen(Qt.Qt.blue))
+        self.spectrumCurve.setYAxis(Qwt.QwtPlot.yLeft)
+        self.setAxisScale( Qwt.QwtPlot.xBottom, 0.0, 512.0)
+        self.setAxisScale( Qwt.QwtPlot.yLeft, -140.0, -60.0)        
+    
+    def plotFft(self, values):
+        self.spectrumCurve.setData(range(len(values)), values)
+        self.replot()
