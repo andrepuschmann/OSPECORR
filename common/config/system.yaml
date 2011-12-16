@@ -20,12 +20,17 @@ components:
    - name: pySysMoCo
      gates:
       - fastSensingResult: sub
-#      - fineSensingResult: sub
-#      - chStatusUpdate: sub
+      - fineSensingResult: sub
+      - chStatusUpdate: sub
 
    - name: examplePublisher
      gates:
       - fastSensingResult: pub
+      
+   - name: FftSensingController
+     gates:
+      - fineSensingResult: pub
+      - chStatusUpdate: pub
 
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
@@ -34,3 +39,5 @@ components:
 connections:
 
    - [ pySysMoCo.fastSensingResult,   examplePublisher.fastSensingResult ]
+   - [ pySysMoCo.fineSensingResult,   FftSensingController.fineSensingResult ]
+   - [ pySysMoCo.chStatusUpdate,      FftSensingController.chStatusUpdate ]
