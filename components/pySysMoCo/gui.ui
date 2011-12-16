@@ -292,8 +292,8 @@
             <property name="title">
              <string>QoS requirements</string>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
                 <widget class="QLabel" name="dataRateLabel">
@@ -352,7 +352,7 @@
                </item>
               </layout>
              </item>
-             <item>
+             <item row="0" column="1">
               <layout class="QHBoxLayout" name="horizontalLayout_5">
                <item>
                 <widget class="QLabel" name="delayLabel">
@@ -411,7 +411,7 @@
                </item>
               </layout>
              </item>
-             <item>
+             <item row="1" column="0" colspan="2">
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
                 <widget class="QLabel" name="losslessLabel">
@@ -487,7 +487,7 @@
             <property name="title">
              <string>Link statistics</string>
             </property>
-            <layout class="QFormLayout" name="formLayout">
+            <layout class="QGridLayout" name="gridLayout_4">
              <item row="0" column="0">
               <layout class="QHBoxLayout" name="horizontalLayout_17">
                <item>
@@ -735,11 +735,11 @@
          <property name="title">
           <string>L1 - PHY</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
+         <layout class="QGridLayout" name="gridLayout">
           <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QLabel" name="dataRateLabel_2">
+             <widget class="QLabel" name="rssiLabel">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -751,6 +751,9 @@
                 <width>120</width>
                 <height>16777215</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string>received signal strength indicator</string>
               </property>
               <property name="text">
                <string>RSSI</string>
@@ -782,6 +785,192 @@
             </item>
             <item>
              <spacer name="horizontalSpacer_12">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="evmLabel">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>error vector magnitude</string>
+              </property>
+              <property name="text">
+               <string>EVM</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_21">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="evmValue">
+              <property name="text">
+               <string>none</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_22">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_18">
+            <item>
+             <widget class="QLabel" name="ferLabel">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>frame error rate</string>
+              </property>
+              <property name="text">
+               <string>FER</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_23">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="ferValue">
+              <property name="text">
+               <string>none</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_24">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_19">
+            <item>
+             <widget class="QLabel" name="cfoLabel">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>carrier frequency offset</string>
+              </property>
+              <property name="text">
+               <string>CFO</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_25">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="cfoValue">
+              <property name="text">
+               <string>none</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_26">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>

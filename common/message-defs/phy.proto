@@ -8,6 +8,13 @@ message fineSensingResult {
   repeated float fft_bin = 1;
 }
 
+message demodStatistics {
+  optional float rssi = 1; // received signal strength indicator [dB]
+  optional float evm = 2;  // error vector magnitude [dB]
+  optional float fer = 3;  // frame error rate
+  optional float cfo = 4;  // carrier frequency offset (f/Fs)
+}
+
 message chStatusUpdate {
   required int32 channel = 1;
   optional string description = 2;

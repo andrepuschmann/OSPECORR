@@ -33,7 +33,7 @@ import time
 
 # import own classes
 from listener import ListenerTask
-import sensing_pb2
+import phy_pb2
 import application_pb2
 
 class mainDialog(QtGui.QDialog):
@@ -43,6 +43,7 @@ class mainDialog(QtGui.QDialog):
     listenerChStatusUpdate = ListenerTask(None,'pySysMoCo', 'chStatusUpdate')
     listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
     listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
+    listenerDemodStats = ListenerTask(None,'pySysMoCo', 'demodStatistics')
     
     
     def __init__(self):
@@ -75,6 +76,7 @@ class mainDialog(QtGui.QDialog):
         self.listenerChStatusUpdate.recvSignal.connect(self.updateChannelStatus)
         self.listenerQosReq.recvSignal.connect(self.updateQosReq)
         self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
+        self.listenerDemodStats.recvSignal.connect(self.updateDemodStats)
         
         # start listener threads
         self.listenerFastSensing.start()
@@ -82,6 +84,7 @@ class mainDialog(QtGui.QDialog):
         self.listenerChStatusUpdate.start()
         self.listenerQosReq.start()
         self.listenerLinkStats.start()
+        self.listenerDemodStats.start()
         
 
     def pauseButtonClicked(self):
@@ -107,14 +110,14 @@ class mainDialog(QtGui.QDialog):
         self.ui.messageLog.clear()
         
     def updateFastSensing(self):
-        result = sensing_pb2.fastSensingResult()
+        result = phy_pb2.fastSensingResult()
         result.ParseFromString(self.listenerFastSensing.string) # fill protobuf, string is stored in listener object
         
         # update gui
         self.ui.rssiValue.setText(str(result.rssi) + ' dBm')
         
     def updateFineSensing(self):
-        result = sensing_pb2.fineSensingResult()
+        result = phy_pb2.fineSensingResult()
         result.ParseFromString(self.listenerFineSensing.string) # fill protobuf, string is stored in listener object
         
         # update fft plot
@@ -134,7 +137,7 @@ class mainDialog(QtGui.QDialog):
                 #self.canvas.draw()
     
     def updateChannelStatus(self):
-        update = sensing_pb2.chStatusUpdate()
+        update = phy_pb2.chStatusUpdate()
         update.ParseFromString(self.listenerChStatusUpdate.string) # fill protobuf, string is stored in listener object
         
         # update channel activity
@@ -183,6 +186,16 @@ class mainDialog(QtGui.QDialog):
         self.ui.downwardThroughputValue.setText(str(format(stats.downwardThroughput, '.2f')) + ' kbit/s')
         self.ui.downwardPacketSizeValue.setText(str(stats.downwardPacketSize) + ' byte')
         
+    def updateDemodStats(self):
+        stats = phy_pb2.demodStatistics()
+        stats.ParseFromString(self.listenerDemodStats.string)
+        
+        # set gui
+        self.ui.rssiValue.setText(str(format(stats.rssi, '.2f')) + ' dB')
+        self.ui.evmValue.setText(str(format(stats.evm, '.2f')) + ' dB')
+        self.ui.ferValue.setText(str(format(stats.fer, '.2f')))
+        self.ui.cfoValue.setText(str(format(stats.cfo, '.2f')) + ' f/Fs')
+        
     
     def quitWindow(self):
         # ask listener thread to stop
@@ -191,6 +204,7 @@ class mainDialog(QtGui.QDialog):
         self.listenerChStatusUpdate.stop()
         self.listenerQosReq.stop()
         self.listenerLinkStats.stop()
+        self.listenerDemodStats.stop()
         self.close()
 
 

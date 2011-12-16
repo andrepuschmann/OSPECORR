@@ -24,6 +24,7 @@ components:
       - chStatusUpdate: sub
       - qosRequirements: sub
       - linkStatistics: sub
+      - demodStatistics: sub
 
    - name: examplePublisher
      gates:
@@ -45,7 +46,10 @@ components:
      gates:
       - qosRequirements: pub
       - linkStatistics: pub
- 
+
+   - name: LiquidOfdmDemodComponent
+     gates:
+      - demodStatistics: pub
 
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
@@ -59,3 +63,4 @@ connections:
    - [ pySysMoCo.chStatusUpdate,      HandoverController.chStatusUpdate ]
    - [ pySysMoCo.qosRequirements,     TrafficAnalyzerComponent.qosRequirements ]
    - [ pySysMoCo.linkStatistics,      TrafficAnalyzerComponent.linkStatistics ]
+   - [ pySysMoCo.demodStatistics,     LiquidOfdmDemodComponent.demodStatistics ]
