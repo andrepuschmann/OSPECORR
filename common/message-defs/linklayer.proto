@@ -1,0 +1,8 @@
+package mac;
+
+message macStatistics {
+  optional float txQueueLen = 1;
+  optional float pktRetrans = 2;
+  optional float rtt = 3;
+  optional float pktSize = 4;
+}
