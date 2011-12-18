@@ -1,0 +1,16 @@
+package csmamac;
+
+message macPacket {
+
+  enum packetType {
+    DATA = 0;
+    ACK = 1;
+    NACK = 2;
+  }
+
+  required string source = 1;
+  required string destination = 2;
+  required packetType type = 3;
+  required uint32 seqno = 4;
+  repeated bytes payload = 5;
+}

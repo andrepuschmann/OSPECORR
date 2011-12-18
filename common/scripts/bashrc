@@ -1,3 +1,4 @@
 # to find libmessages.so and python protobuf files
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MOBICOM_PROJECT_BUILD_PATH/common/message-defs
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MOBICOM_PATH/$MOBICOM_BUILD_NAME/common/scl/src
 export PYTHONPATH=$PYTHONPATH:$MOBICOM_PROJECT_BUILD_PATH/common/message-defs
