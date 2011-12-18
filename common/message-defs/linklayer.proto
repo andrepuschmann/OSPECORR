@@ -1,8 +1,9 @@
-package mac;
+package linklayer;
 
 message macStatistics {
-  optional float txQueueLen = 1;
-  optional float pktRetrans = 2;
-  optional float rtt = 3;
-  optional float pktSize = 4;
+  optional int32 txQueueSize = 1;
+  optional int32 txQueueCapacity = 2;
+  optional int32 txPerPacket = 3;
+  optional float rtt = 4;
+  optional float pktSize = 5;
 }

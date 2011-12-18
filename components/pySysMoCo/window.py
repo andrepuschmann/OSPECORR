@@ -33,8 +33,10 @@ import time
 
 # import own classes
 from listener import ListenerTask
-import phy_pb2
 import application_pb2
+import linklayer_pb2
+import phy_pb2
+
 
 class mainDialog(QtGui.QDialog):
     # create listener objects
@@ -44,6 +46,7 @@ class mainDialog(QtGui.QDialog):
     listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
     listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
     listenerDemodStats = ListenerTask(None,'pySysMoCo', 'demodStatistics')
+    listenerMacStats = ListenerTask(None,'pySysMoCo', 'macStatistics')
     
     
     def __init__(self):
@@ -77,6 +80,7 @@ class mainDialog(QtGui.QDialog):
         self.listenerQosReq.recvSignal.connect(self.updateQosReq)
         self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
         self.listenerDemodStats.recvSignal.connect(self.updateDemodStats)
+        self.listenerMacStats.recvSignal.connect(self.updateMacStats)
         
         # start listener threads
         self.listenerFastSensing.start()
@@ -85,6 +89,7 @@ class mainDialog(QtGui.QDialog):
         self.listenerQosReq.start()
         self.listenerLinkStats.start()
         self.listenerDemodStats.start()
+        self.listenerMacStats.start()
         
 
     def pauseButtonClicked(self):
@@ -195,8 +200,18 @@ class mainDialog(QtGui.QDialog):
         self.ui.evmValue.setText(str(format(stats.evm, '.2f')) + ' dB')
         self.ui.ferValue.setText(str(format(stats.fer, '.2f')))
         self.ui.cfoValue.setText(str(format(stats.cfo, '.2f')) + ' f/Fs')
+
+
+    def updateMacStats(self):
+        stats = linklayer_pb2.macStatistics()
+        stats.ParseFromString(self.listenerMacStats.string)
         
-    
+        # set gui
+        self.ui.rttValue.setText(str(format(stats.rtt, '.2f')) + ' ms')
+        self.ui.txQueueValue.setText(str(stats.txQueueSize) + '/' + str(stats.txQueueCapacity))
+        self.ui.retransValue.setText(str(stats.txPerPacket))
+
+            
     def quitWindow(self):
         # ask listener thread to stop
         self.listenerFastSensing.stop()
@@ -205,6 +220,7 @@ class mainDialog(QtGui.QDialog):
         self.listenerQosReq.stop()
         self.listenerLinkStats.stop()
         self.listenerDemodStats.stop()
+        self.listenerMacStats.stop()
         self.close()
 
 

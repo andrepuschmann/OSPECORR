@@ -25,6 +25,7 @@ components:
       - qosRequirements: sub
       - linkStatistics: sub
       - demodStatistics: sub
+      - macStatistics: sub
 
    - name: examplePublisher
      gates:
@@ -51,6 +52,12 @@ components:
      gates:
       - demodStatistics: pub
 
+   - name: CsmaMacComponent
+     gates:
+      - macStatistics: pub
+
+
+
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
 #
@@ -64,3 +71,4 @@ connections:
    - [ pySysMoCo.qosRequirements,     TrafficAnalyzerComponent.qosRequirements ]
    - [ pySysMoCo.linkStatistics,      TrafficAnalyzerComponent.linkStatistics ]
    - [ pySysMoCo.demodStatistics,     LiquidOfdmDemodComponent.demodStatistics ]
+   - [ pySysMoCo.macStatistics,       CsmaMacComponent.macStatistics ]
