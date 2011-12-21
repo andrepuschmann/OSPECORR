@@ -56,8 +56,6 @@ components:
      gates:
       - macStatistics: pub
 
-
-
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
 #

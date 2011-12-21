@@ -22,13 +22,13 @@
 import scl
 import random
 import time
-import sensing_pb2
+import phy_pb2
 
 map = scl.generate_map("examplePublisher")
 sock = map["fastSensingResult"]
 print "continously sensing sensing results .."
 while True:
-    result = sensing_pb2.fastSensingResult()
+    result = phy_pb2.fastSensingResult()
     result.rssi = random.uniform(50, 80)
     print result.rssi
     string = result.SerializeToString()
