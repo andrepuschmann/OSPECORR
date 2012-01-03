@@ -4,6 +4,9 @@ message macStatistics {
   optional int32 txQueueSize = 1;
   optional int32 txQueueCapacity = 2;
   optional int32 txPerPacket = 3;
-  optional float rtt = 4;
-  optional float pktSize = 5;
+  optional int32 minCw = 4;
+  optional int32 maxCw = 5;
+  optional int32 curCw = 6;
+  optional float rtt = 7;
+  optional float pktSize = 8;
 }

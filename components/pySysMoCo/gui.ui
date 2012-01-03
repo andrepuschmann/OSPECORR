@@ -925,7 +925,7 @@
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_22">
             <item>
-             <widget class="QLabel" name="pktSizeLabel">
+             <widget class="QLabel" name="cwLabel">
               <property name="minimumSize">
                <size>
                 <width>120</width>
@@ -939,10 +939,10 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>carrier frequency offset</string>
+               <string>contention windos state (min/current/max)</string>
               </property>
               <property name="text">
-               <string>Packet Size</string>
+               <string>CW</string>
               </property>
              </widget>
             </item>
@@ -963,7 +963,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLabel" name="pktSizeLabel_2">
+             <widget class="QLabel" name="cwValue">
               <property name="text">
                <string>none</string>
               </property>

@@ -210,6 +210,7 @@ class mainDialog(QtGui.QDialog):
         self.ui.rttValue.setText(str(format(stats.rtt, '.2f')) + ' ms')
         self.ui.txQueueValue.setText(str(stats.txQueueSize) + '/' + str(stats.txQueueCapacity))
         self.ui.retransValue.setText(str(stats.txPerPacket))
+        self.ui.cwValue.setText(str(stats.minCw) + '/' + str(stats.curCw) + '/' + str(stats.maxCw))
 
             
     def quitWindow(self):
