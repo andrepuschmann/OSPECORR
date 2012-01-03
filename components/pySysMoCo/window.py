@@ -186,9 +186,9 @@ class mainDialog(QtGui.QDialog):
         stats.ParseFromString(self.listenerLinkStats.string)
         
         # set gui
-        self.ui.upwardThroughputValue.setText(str(format(stats.upwardThroughput, '.2f')) + ' kbit/s')
+        self.ui.upwardThroughputValue.setText(str(format(stats.upwardThroughput, '.2f')) + ' kB/s')
         self.ui.upwardPacketSizeValue.setText(str(stats.upwardPacketSize) + ' byte')
-        self.ui.downwardThroughputValue.setText(str(format(stats.downwardThroughput, '.2f')) + ' kbit/s')
+        self.ui.downwardThroughputValue.setText(str(format(stats.downwardThroughput, '.2f')) + ' kB/s')
         self.ui.downwardPacketSizeValue.setText(str(stats.downwardPacketSize) + ' byte')
         
     def updateDemodStats(self):
