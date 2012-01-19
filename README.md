@@ -9,7 +9,7 @@ This repository contains the public bits of the platform.
 1. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
 
     ```bash
-$ git@github.com:andrepuschmann/OSPECORR.git MOBICOM
+$ git clone git@github.com:andrepuschmann/OSPECORR.git MOBICOM
 ```
 2. Change into the new directory and initialize the submodules (i.e. the common part of MOBICOM)
    
@@ -39,5 +39,5 @@ $ make
 
     ```bash
 $ cd ../OSPECORR/components/pySysMoCo
-$ ./pySysMoCo
+$ ./pySysMoCo.py
 ```
