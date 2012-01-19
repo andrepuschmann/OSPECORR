@@ -2,14 +2,41 @@
 
 This is OSPECOR². OSPENCOR² stands for Open Software Platform for Exeperimental Cognitive Radio Research.
 
-This repository contains the public bits of the platform.
+### Overview
+
+This repository contains the public bits of the platform. Some of the core components such as the SDR framework (i.e. Iris) are not yet included for license reasons but will be added in the future.
+
+The repository consists of the core of OSPECORR and one subrepository called common which houses commonly used components such as the Signaling and Communication Link (SCL) which is used by multiple projects within the Graduate School on Mobile Communication (MOBICOM) at Ilmenau University of Technology, Ilmenau, Germany.
+
+The general folder structure is shown below:
+
+* __MOBICOM__ (MOBICOM_PATH defines top-level path)
+    * __common__ MOBICOM common, aka __"level 1 common"__
+        * __scl__: signaling and communication link
+        * __svctrl__: service control utility
+        * __scripts__: bashrc (sourced from user bashrc)
+    * __OSPECORR__ (MOBICOM_PROJECT_NAME = __OSPECORR__):
+        * __common__ __OSPECORR__ common, aka __"level 2 common"__
+            * __config__: common configuration files for all subprojects
+            * __scripts__: bashrc (sourced from upper-level bashrc)
+        * __components__: programs connected through __common__ above
+
+The key motivation behind this structure is to support code-reuse while keeping conceptually different parts of the software system in different repositories (plug-in concept).
+Thus, our system has the following benefits:
+
+* a standard structure, comparable with the Linux filesystem having fixed file locations at 3 hierarchy levels (1-3) in the filesystem. Repeating directories are for example: config, messages, scripts.
+* code reuse between distinct projects like ARCADE and OSPECOR (__"level 1"__ common) keeps systems maintainable through submodules
+* support for automatic export of environment variables through multiple bashrc files
+* defining different software architectures (__"level 2"__ common) for multiple deployment targets (UAV, PC, ...)
+* sharing code and message formats between multiple processes (components) on a single machine (__"level 3"__ common)
+
 
 ### Getting started:
 
 1. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
 
     ```bash
-$ git clone git@github.com:andrepuschmann/OSPECORR.git MOBICOM
+$ git clone git://@github.com:andrepuschmann/OSPECORR.git MOBICOM
 ```
 2. Change into the new directory and initialize the submodules (i.e. the common part of MOBICOM)
    
