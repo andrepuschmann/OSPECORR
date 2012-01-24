@@ -62,6 +62,12 @@ $ cmake ..
 $ make
 ```
 
+    Note, on the E100, you might use:
+
+    ```bash
+$ cmake -DCMAKE_TOOLCHAIN_FILE=../common/scripts/cmake/Toolchains/arm_cortex_a8_native.cmake ..
+```    
+
 5. You're done! Try it out by starting pySysMoCo in one console and examplePublisher in another console.
 
     ```bash
