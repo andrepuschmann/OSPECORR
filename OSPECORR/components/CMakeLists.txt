@@ -1,2 +1,3 @@
+ADD_SUBDIRECTORY (iris2)
 ADD_SUBDIRECTORY (pySysMoCo)
 ADD_SUBDIRECTORY (examplePublisher)
