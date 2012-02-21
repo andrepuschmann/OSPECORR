@@ -99,10 +99,10 @@ class mainDialog(QtGui.QDialog):
 
     def toggleChannelColors(self):
         self.ui.statusChannel1.setStyleSheet("background-color:rgb(0,170,0);");
-        self.ui.statusChannel2.setStyleSheet("background-color:rgb(255,140,0);");
-        self.ui.statusChannel3.setStyleSheet("background-color:rgb(255,0,0);");
-        self.ui.statusChannel4.setStyleSheet("background-color:rgb(0,170,0);");
-        self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
+        #self.ui.statusChannel2.setStyleSheet("background-color:rgb(255,140,0);");
+        #self.ui.statusChannel3.setStyleSheet("background-color:rgb(255,0,0);");
+        #self.ui.statusChannel4.setStyleSheet("background-color:rgb(0,170,0);");
+        #self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         print "Hello, World!"
 
     def clearButtonClicked(self):
