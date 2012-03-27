@@ -33,19 +33,25 @@ Thus, our system has the following benefits:
 
 ### Getting started:
 
-1. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
+1. Install some basic packet dependencies onto your system. E.g. using Ubuntu, invoke the following:
 
     ```bash
-$ git clone git://@github.com:andrepuschmann/OSPECORR.git MOBICOM
+$ sudo apt-get install libprotobuf-dev python-protobuf python-zeromq python-yaml python-argparse python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev pyzmq
 ```
-2. Change into the new directory and initialize the submodules (i.e. the common part of MOBICOM)
+
+2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
+
+    ```bash
+$ git clone git://github.com/andrepuschmann/OSPECORR.git MOBICOM
+```
+3. Change into the new directory and initialize the submodules (i.e. the common part of MOBICOM)
    
     ```bash
 $ cd ./MOBICOM
 $ ./gitsub_init.sh
 ```
     
-3. Copy the content of ```example.bashrc``` into your local bashrc and edit it if required, reinstalize your environment
+4. Copy the content of ```example.bashrc``` into your local bashrc and edit it if required, reinstalize your environment
 
     ```bash
 $ cat example.bashrc >> ~/.bashrc
@@ -53,7 +59,7 @@ $ nano ~/.bashrc
 $ bash
 ```
 
-4. Now, create a new build directory and build the source
+5. Now, create a new build directory and build the source
 
     ```bash
 $ mkdir build
@@ -68,7 +74,7 @@ $ make
 $ cmake -DCMAKE_TOOLCHAIN_FILE=../common/scripts/cmake/Toolchains/arm_cortex_a8_native.cmake ..
 ```    
 
-5. You're done! Try it out by starting pySysMoCo in one console and examplePublisher in another console.
+6. You're done! Try it out by starting pySysMoCo in one console and examplePublisher in another console.
 
     ```bash
 $ cd ../OSPECORR/components/pySysMoCo
