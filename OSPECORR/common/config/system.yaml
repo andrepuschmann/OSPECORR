@@ -26,11 +26,15 @@ components:
       - linkStatistics: sub
       - demodStatistics: sub
       - macStatistics: sub
+      
+   - name: DRM
+     gates:
+      - drmcontrol: rep
+      - drmdata: pub
 
    - name: examplePublisher
      gates:
       - fastSensingResult: pub
-      
 
    # start of Iris components
    

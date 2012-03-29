@@ -16,21 +16,30 @@
 #   You should have received a copy of the GNU General Public License
 #   along with OSPECOR².  If not, see <http://www.gnu.org/licenses/>.
 #
-#   Copyright 2011 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
+#   Copyright 2012 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
 #
 
 import scl
+import scldrm_pb2
 import random
 import time
-import phy_pb2
+from google.protobuf import message
 
-map = scl.generate_map("examplePublisher")
-sock = map["fastSensingResult"]
-print "continously sending sensing results .."
+
+map = scl.generate_map("DRM")
+control = map["drmcontrol"]
+
+print "Waiting for DRM request messages .."
 while True:
-    result = phy_pb2.fastSensingResult()
-    result.rssi = random.uniform(50, 80)
-    print result.rssi
-    string = result.SerializeToString()
-    sock.send(string)
-    time.sleep(0.2)
+    string = control.recv()
+    request = scldrm_pb2.controlRequest()
+    request.ParseFromString(string)
+    print "received " + request.command
+    #switch(request.command)
+    
+    reply = scldrm_pb2.controlReply()
+    reply.command = request.command # same as request
+    reply.freq = 3 # test
+    string = reply.SerializeToString()
+    control.send(string)
+    time.sleep(0.1)

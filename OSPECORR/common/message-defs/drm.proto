@@ -1,0 +1,21 @@
+package scl_drm;
+
+enum commandId {
+  GET_CHANNEL_LIST = 0;
+  GET_FREE_CHANNEL = 1;
+}
+
+enum channelProp {
+  LEAST_USED = 0;
+  HIGHEST_BANDWIDTH = 0;
+}
+
+message controlRequest {
+  required commandId command = 1;
+  optional channelProp prop = 2;
+}
+
+message controlReply {
+  required commandId command = 1;
+  optional int32 freq = 2;
+}

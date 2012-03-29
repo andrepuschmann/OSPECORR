@@ -28,3 +28,15 @@ message chStatusUpdate {
   required statusType currentStatus = 3;  
   optional string statusMessage = 4;
 }
+
+message channelDescription {
+  required int32 f_center = 1;
+  required int32 bandwidth = 2;
+  optional int32 f_start = 3;
+  optional int32 f_end = 4;
+  optional string name = 5;
+  optional int32 lo_offset = 6;
+  optional string antenna = 7;
+  required int32 tx_gain = 8;
+  required int32 rx_gain = 9;
+}
