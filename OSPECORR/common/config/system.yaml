@@ -27,10 +27,10 @@ components:
       - demodStatistics: sub
       - macStatistics: sub
       
-   - name: DRM
-     gates:
-      - drmcontrol: rep
-      - drmdata: pub
+#   - name: DRM
+#     gates:
+#      - drmcontrol: rep
+#      - drmdata: pub
 
    - name: examplePublisher
      gates:
