@@ -39,6 +39,11 @@ Thus, our system has the following benefits:
 $ sudo apt-get install libprotobuf-dev python-protobuf python-zeromq python-yaml python-argparse python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev pyzmq
 ```
 
+   For Ubuntu 12.04 LTS use:
+   ```bash
+   sudo apt-get install libprotobufpython-argparse python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
+```   
+
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
 
     ```bash
