@@ -36,12 +36,12 @@ Thus, our system has the following benefits:
 1. Install some basic packet dependencies onto your system. E.g. using Ubuntu, invoke the following:
 
     ```bash
-$ sudo apt-get install build-essential libboost-dev-all libfftw3-dev cmake libprotobuf-dev python-protobuf python-zeromq python-yaml python-argparse python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev pyzmq
+$ sudo apt-get install build-essential libboost-all-dev libfftw3-dev cmake libprotobuf-dev python-protobuf python-zeromq python-yaml python-argparse python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev pyzmq
 ```
 
    For Ubuntu 12.04 LTS use:
    ```bash
-   sudo apt-get install build-essential libboost-dev-all libfftw3-dev cmake libprotobufpython-argparse python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
+   sudo apt-get install build-essential libboost-all-dev libfftw3-dev cmake python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
 ```   
 
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
