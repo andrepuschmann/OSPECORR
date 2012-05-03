@@ -1,5 +1,10 @@
+# these are optional components of OSPECORR
 IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/iris2/")
 ADD_SUBDIRECTORY (iris2)
 ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/iris2/")
+IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/drmGenerator/")
+ADD_SUBDIRECTORY (drmGenerator)
+ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/drmGenerator/")
+# these are the mandatory components
 ADD_SUBDIRECTORY (pySysMoCo)
 ADD_SUBDIRECTORY (examplePublisher)
