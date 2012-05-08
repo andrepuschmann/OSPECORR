@@ -41,7 +41,7 @@ $ sudo apt-get install build-essential libboost-all-dev libfftw3-dev cmake libpr
 
    For Ubuntu 12.04 LTS use:
    ```bash
-   sudo apt-get install build-essential libboost-all-dev libfftw3-dev cmake python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
+   sudo apt-get install build-essential libboost-all-dev libfftw3-dev cmake libprotobuf-dev protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
 ```   
 
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
