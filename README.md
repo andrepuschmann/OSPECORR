@@ -1,6 +1,6 @@
 # OSPECOR²
 
-This is OSPECOR². OSPENCOR² stands for Open Software Platform for Experimental Cognitive Radio Research.
+This is OSPECOR². OSPECOR² stands for Open Software Platform for Experimental Cognitive Radio Research.
 
 ### Overview
 
