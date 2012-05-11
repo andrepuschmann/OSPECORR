@@ -1,6 +1,6 @@
 # OSPECOR²
 
-This is OSPECOR². OSPENCOR² stands for Open Software Platform for Experimental Cognitive Radio Research.
+This is OSPECOR². OSPECOR² stands for Open Software Platform for Experimental Cognitive Radio Research.
 
 ### Overview
 
@@ -36,7 +36,7 @@ Thus, our system has the following benefits:
 1. Install some basic packet dependencies onto your system. E.g. using Ubuntu, invoke the following:
 
    ```bash
-$ sudo apt-get install build-essential libboost-all-dev libfftw3-dev cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
+$ sudo apt-get install build-essential libboost-all-dev libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq
 ```   
 
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
