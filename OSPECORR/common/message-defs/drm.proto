@@ -11,12 +11,48 @@ enum channelProp {
   HIGHEST_BANDWIDTH = 2;
 }
 
+
+message statusUpdate {
+  required uint32 channel_id = 1 ;
+  required uint64 timestamp = 2 ;
+  required int32 rssi = 3 ;
+  repeated int32 fft = 4 [packed=true];
+  enum statusType {
+    BUSY_PU = 0;
+    FREE = 1;
+    BUSY_SU = 2;
+  }
+  required statusType status = 5  ;
+  optional uint64 sequence = 6 ;
+}
+
+
+message channelSpec {
+    required uint32 channel_id = 1 ;
+    required uint32 f_center = 2 ;
+    required uint32 bandwith = 3 ;
+    required string name = 4;
+    required uint32 lo_offset = 5 ;
+    required string antenna = 6 ;
+    required uint32 tx_gain = 7 ;
+    required uint32 rx_gain = 8 ;
+    enum channelType {
+       LICENCED = 0;
+       UNLICENCED = 1;
+    }
+    required channelType channel_type = 9 ;
+    optional uint32 f_start = 10 ;
+    optional uint32 f_end = 11 ;
+    optional uint64 sequence = 12 ;
+    optional channelProp prop = 13;
+}
+
 message controlRequest {
   required commandId command = 1;
-  optional channelProp prop = 2;
+  repeated channelSpec channelMap = 2;
 }
 
 message controlReply {
   required commandId command = 1;
-  optional int32 freq = 2;
+  repeated channelSpec channelMap = 2;
 }

@@ -27,10 +27,15 @@ components:
       - demodStatistics: sub
       - macStatistics: sub
       
-#   - name: DRM
-#     gates:
-#      - drmcontrol: rep
-#      - drmdata: pub
+   - name: drm
+     gates:
+      - control: rep
+      - data: sub
+
+   - name: drmgenerator
+     gates:
+      - control: req
+      - data: pub
 
    - name: examplePublisher
      gates:
@@ -74,3 +79,5 @@ connections:
    - [ pySysMoCo.linkStatistics,      TrafficAnalyzerComponent.linkStatistics ]
    - [ pySysMoCo.demodStatistics,     LiquidOfdmDemodComponent.demodStatistics ]
    - [ pySysMoCo.macStatistics,       CsmaMacComponent.macStatistics ]
+   - [ drmgenerator.control,          drm.control ]
+   - [ drmgenerator.data,             drm.data ]
