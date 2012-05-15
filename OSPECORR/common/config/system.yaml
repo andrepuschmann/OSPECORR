@@ -31,11 +31,13 @@ components:
      gates:
       - control: rep
       - data: sub
+      - event: pub
 
    - name: drmgenerator
      gates:
       - control: req
       - data: pub
+      - event: sub
 
    - name: examplePublisher
      gates:
@@ -81,3 +83,4 @@ connections:
    - [ pySysMoCo.macStatistics,       CsmaMacComponent.macStatistics ]
    - [ drmgenerator.control,          drm.control ]
    - [ drmgenerator.data,             drm.data ]
+   - [ drm.event,                  drmgenerator.event ]

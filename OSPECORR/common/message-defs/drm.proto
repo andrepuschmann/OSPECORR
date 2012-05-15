@@ -1,16 +1,22 @@
 package scl_drm;
 
+enum controlType {
+  REQUEST = 1;
+  REPLY = 2;
+  EVENT = 3;
+}
+
 enum commandId {
-  GET_CHANNEL_LIST = 0;
-  GET_FREE_CHANNEL = 1;
+  GET_CHANNEL_LIST = 1;
+  GET_SINGLE_CHANNEL = 2;
 }
 
 enum channelProp {
-  LEAST_USED = 0;
-  LONGEST_IDLE_TIME = 1;
-  HIGHEST_BANDWIDTH = 2;
+  NONE = 1;
+  LEAST_USED = 2;
+  LONGEST_IDLE_TIME = 3;
+  HIGHEST_BANDWIDTH = 4;
 }
-
 
 message statusUpdate {
   required uint32 channel_id = 1 ;
@@ -25,7 +31,6 @@ message statusUpdate {
   required statusType status = 5  ;
   optional uint64 sequence = 6 ;
 }
-
 
 message channelSpec {
     required uint32 channel_id = 1 ;
@@ -47,12 +52,9 @@ message channelSpec {
     optional channelProp prop = 13;
 }
 
-message controlRequest {
-  required commandId command = 1;
-  repeated channelSpec channelMap = 2;
-}
-
-message controlReply {
-  required commandId command = 1;
-  repeated channelSpec channelMap = 2;
+message control {
+  required controlType type = 1;
+  required commandId command = 2;
+  optional channelProp prop = 3;
+  repeated channelSpec channelMap = 4;
 }
