@@ -70,6 +70,9 @@ class mainDialog(QtGui.QDialog):
         self.ui.clearButton.clicked.connect(self.clearButtonClicked)
         self.ui.closeButton.clicked.connect(self.quitWindow)
         self.ui.pauseButton.clicked.connect(self.pauseButtonClicked)
+        # neighbortable has 3 columns (address, tx packets, rx packets)
+        self.ui.neighborTable.setColumnCount(3)
+        self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets"]) 
         self.lastChannel = 0 # to reset last channel
         self.paused = False
         
@@ -201,7 +204,23 @@ class mainDialog(QtGui.QDialog):
         self.ui.ferValue.setText(str(format(stats.fer, '.2f')))
         self.ui.cfoValue.setText(str(format(stats.cfo, '.2f')) + ' f/Fs')
 
-
+    def getNeighbortableRow(self, address):
+        # find address in table and set row if found
+        numRows = self.ui.neighborTable.rowCount()
+        row = -1
+        i = 0
+        while i < numRows:
+            if self.ui.neighborTable.item(i,0).text() == address:
+                #print "Address found"
+                row = i
+            i += 1
+        if row == -1:
+            print "Neighbor address " + address + " not found, add it"
+            self.ui.neighborTable.insertRow(numRows)
+            self.ui.neighborTable.setItem(numRows, 0, QtGui.QTableWidgetItem(address))
+            row = numRows
+        return row
+    
     def updateMacStats(self):
         stats = linklayer_pb2.macStatistics()
         stats.ParseFromString(self.listenerMacStats.string)
@@ -212,7 +231,16 @@ class mainDialog(QtGui.QDialog):
         self.ui.retransValue.setText(str(stats.txPerPacket))
         self.ui.cwValue.setText(str(stats.minCw) + '/' + str(stats.curCw) + '/' + str(stats.maxCw))
         self.ui.txRateValue.setText(str(stats.txRate))
-
+        
+        # update txstats (column 1)
+        for nodeStats in stats.txStats:
+            row = self.getNeighbortableRow(nodeStats.address)
+            self.ui.neighborTable.setItem(row, 1, QtGui.QTableWidgetItem(str(nodeStats.packets)))
+        
+        # update rxstats (column 2)
+        for nodeStats in stats.rxStats:
+            row = self.getNeighbortableRow(nodeStats.address)
+            self.ui.neighborTable.setItem(row, 2, QtGui.QTableWidgetItem(str(nodeStats.packets)))
             
     def quitWindow(self):
         # ask listener thread to stop
