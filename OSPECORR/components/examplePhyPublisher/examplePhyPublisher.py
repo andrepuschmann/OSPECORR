@@ -16,7 +16,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with OSPECOR².  If not, see <http://www.gnu.org/licenses/>.
 #
-#   Copyright 2011 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
+#   Copyright 2011-2012 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
 #
 
 import scl
@@ -24,12 +24,18 @@ import random
 import time
 import phy_pb2
 
-map = scl.generate_map("examplePublisher")
-sock = map["fastSensingResult"]
+map = scl.generate_map("PhyComponent")
+sock = map["event"]
 print "continously sending sensing results .."
+threshold = 70
 while True:
-    result = phy_pb2.fastSensingResult()
+    result = phy_pb2.PhyMessage()
     result.rssi = random.uniform(50, 80)
+    result.threshold = threshold
+    if result.rssi > threshold:
+        result.state = phy_pb2.IDLE
+    else:
+        result.state = phy_pb2.BUSY
     print result.rssi
     string = result.SerializeToString()
     sock.send(string)
