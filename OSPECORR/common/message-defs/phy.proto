@@ -1,42 +1,20 @@
 package phy;
 
-message fastSensingResult {
-  required float rssi = 1;
-}
-
-message fineSensingResult {
-  repeated float fft_bin = 1;
-}
-
-message demodStatistics {
-  optional float rssi = 1; // received signal strength indicator [dB]
-  optional float evm = 2;  // error vector magnitude [dB]
-  optional float fer = 3;  // frame error rate
-  optional float cfo = 4;  // carrier frequency offset (f/Fs)
-}
-
-message chStatusUpdate {
-  required int32 channel = 1;
-  optional string description = 2;
-
-  enum statusType {
-    FREE = 0;
-    SU_BUSY = 1;
+enum ChannelState {
+    UNKNOWN = 0;
+    IDLE = 1;
+    BUSY = 2;
     PU_BUSY = 2;
-  }
-
-  required statusType currentStatus = 3;  
-  optional string statusMessage = 4;
 }
 
-message channelDescription {
-  required int32 f_center = 1;
-  required int32 bandwidth = 2;
-  optional int32 f_start = 3;
-  optional int32 f_end = 4;
-  optional string name = 5;
-  optional int32 lo_offset = 6;
-  optional string antenna = 7;
-  required int32 tx_gain = 8;
-  required int32 rx_gain = 9;
+message PhyMessage {
+  optional float rssi = 1;                              // current received signal strength indicator [dB]
+  optional float last_rx_rssi = 2;                      // RSSI at last packets received packet
+  optional float threshold = 3;                         // CCA threshold [dB]
+  optional ChannelState state = 4 [default = UNKNOWN];  // Channel state according to CCA
+  optional float evm = 5;                               // error vector magnitude [dB]
+  optional float cfo = 6;                               // carrier frequency offset (f/Fs)
+  optional float fer = 7;                               // frame error rate
+  repeated float fft_bin = 8;                           // FFT bins
+  optional string status_message = 9;                   // A status message which may be logged or just displayed
 }
