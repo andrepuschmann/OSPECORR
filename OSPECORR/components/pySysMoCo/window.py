@@ -15,7 +15,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with OSPECOR².  If not, see <http://www.gnu.org/licenses/>.
 #
-#   Copyright 2011 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
+#   Copyright 2011-2012 Andre Puschmann <andre.puschmann@tu-ilmenau.de>
 #
 
 from PyQt4.QtCore import Qt, SIGNAL
@@ -40,13 +40,10 @@ import phy_pb2
 
 class mainDialog(QtGui.QDialog):
     # create listener objects
-    listenerFastSensing = ListenerTask(None,'pySysMoCo', 'fastSensingResult')
-    listenerFineSensing = ListenerTask(None,'pySysMoCo', 'fineSensingResult')
-    listenerChStatusUpdate = ListenerTask(None,'pySysMoCo', 'chStatusUpdate')
-    listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
-    listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
-    listenerDemodStats = ListenerTask(None,'pySysMoCo', 'demodStatistics')
-    listenerMacStats = ListenerTask(None,'pySysMoCo', 'macStatistics')
+    #listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
+    #listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
+    listenerPhyEvent = ListenerTask(None,'pySysMoCo', 'phyevent')
+    listenerMacEvent = ListenerTask(None,'pySysMoCo', 'macevent')
     
     
     def __init__(self):
@@ -70,26 +67,23 @@ class mainDialog(QtGui.QDialog):
         self.ui.clearButton.clicked.connect(self.clearButtonClicked)
         self.ui.closeButton.clicked.connect(self.quitWindow)
         self.ui.pauseButton.clicked.connect(self.pauseButtonClicked)
+        # neighbortable has 3 columns (address, tx packets, rx packets)
+        self.ui.neighborTable.setColumnCount(3)
+        self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets"]) 
         self.lastChannel = 0 # to reset last channel
         self.paused = False
         
         # connect listener
-        self.listenerFastSensing.recvSignal.connect(self.updateFastSensing)
-        self.listenerFineSensing.recvSignal.connect(self.updateFineSensing)
-        self.listenerChStatusUpdate.recvSignal.connect(self.updateChannelStatus)
-        self.listenerQosReq.recvSignal.connect(self.updateQosReq)
-        self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
-        self.listenerDemodStats.recvSignal.connect(self.updateDemodStats)
-        self.listenerMacStats.recvSignal.connect(self.updateMacStats)
+        #self.listenerQosReq.recvSignal.connect(self.updateQosReq)
+        #self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
+        self.listenerPhyEvent.recvSignal.connect(self.updatePhy)
+        self.listenerMacEvent.recvSignal.connect(self.updateMac)
         
         # start listener threads
-        self.listenerFastSensing.start()
-        self.listenerFineSensing.start()
-        self.listenerChStatusUpdate.start()
-        self.listenerQosReq.start()
-        self.listenerLinkStats.start()
-        self.listenerDemodStats.start()
-        self.listenerMacStats.start()
+        #self.listenerQosReq.start()
+        #self.listenerLinkStats.start()
+        self.listenerPhyEvent.start()
+        self.listenerMacEvent.start()
         
 
     def pauseButtonClicked(self):
@@ -113,33 +107,7 @@ class mainDialog(QtGui.QDialog):
         self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         self.ui.currentChannel.setText('none')
         self.ui.messageLog.clear()
-        
-    def updateFastSensing(self):
-        result = phy_pb2.fastSensingResult()
-        result.ParseFromString(self.listenerFastSensing.string) # fill protobuf, string is stored in listener object
-        
-        # update gui
-        self.ui.rssiValue.setText(str(result.rssi) + ' dBm')
-        
-    def updateFineSensing(self):
-        result = phy_pb2.fineSensingResult()
-        result.ParseFromString(self.listenerFineSensing.string) # fill protobuf, string is stored in listener object
-        
-        # update fft plot
-        if result.fft_bin:
-            if not self.paused:
-                fft = numpy.array(result.fft_bin._values)
-                # pyqwt display
-                self.ui.plot.plotFft(fft)
-                
-                # matplotlib display
-                #self.axes.set_axis_bgcolor('black')
-                #self.axes.clear()        
-                #self.axes.grid(True)
-                #self.axes.plot(range(len(fft)), fft, '-', label='what')
-                #self.axes.set_ylabel('Power in dBm')
-                #self.axes.axis([0, 512, -140, -70])
-                #self.canvas.draw()
+
     
     def updateChannelStatus(self):
         update = phy_pb2.chStatusUpdate()
@@ -190,21 +158,67 @@ class mainDialog(QtGui.QDialog):
         self.ui.upwardPacketSizeValue.setText(str(stats.upwardPacketSize) + ' byte')
         self.ui.downwardThroughputValue.setText(str(format(stats.downwardThroughput, '.2f')) + ' kB/s')
         self.ui.downwardPacketSizeValue.setText(str(stats.downwardPacketSize) + ' byte')
-        
-    def updateDemodStats(self):
-        stats = phy_pb2.demodStatistics()
-        stats.ParseFromString(self.listenerDemodStats.string)
+
+
+    def stateToString(self, state):
+        if state == phy_pb2.UNKNOWN:
+            return "unknown"
+        elif state == phy_pb2.IDLE:
+            return "idle"
+        elif state == phy_pb2.BUSY:
+            return "busy"
+        elif state == phy_pb2.PU_BUSY:
+            return "PU active"
+
+
+    def updatePhy(self):
+        stats = phy_pb2.PhyMessage()
+        stats.ParseFromString(self.listenerPhyEvent.string)
         
         # set gui
         self.ui.rssiValue.setText(str(format(stats.rssi, '.2f')) + ' dB')
+        self.ui.lastRssiValue.setText(str(format(stats.last_rx_rssi, '.2f')) + ' dB')
+        self.ui.thresholdValue.setText(str(format(stats.threshold, '.2f')) + ' dB')
+        self.ui.channelStateValue.setText(self.stateToString(stats.state))
         self.ui.evmValue.setText(str(format(stats.evm, '.2f')) + ' dB')
         self.ui.ferValue.setText(str(format(stats.fer, '.2f')))
         self.ui.cfoValue.setText(str(format(stats.cfo, '.2f')) + ' f/Fs')
 
+        # update fft plot
+        if stats.fft_bin:
+            if not self.paused:
+                fft = numpy.array(stats.fft_bin._values)
+                # pyqwt display
+                self.ui.plot.plotFft(fft)
+                # matplotlib display
+                #self.axes.set_axis_bgcolor('black')
+                #self.axes.clear()        
+                #self.axes.grid(True)
+                #self.axes.plot(range(len(fft)), fft, '-', label='what')
+                #self.axes.set_ylabel('Power in dBm')
+                #self.axes.axis([0, 512, -140, -70])
+                #self.canvas.draw()
 
-    def updateMacStats(self):
+    def getNeighbortableRow(self, address):
+        # find address in table and set row if found
+        numRows = self.ui.neighborTable.rowCount()
+        row = -1
+        i = 0
+        while i < numRows:
+            if self.ui.neighborTable.item(i,0).text() == address:
+                #print "Address found"
+                row = i
+            i += 1
+        if row == -1:
+            print "Neighbor address " + address + " not found, add it"
+            self.ui.neighborTable.insertRow(numRows)
+            self.ui.neighborTable.setItem(numRows, 0, QtGui.QTableWidgetItem(address))
+            row = numRows
+        return row
+    
+    def updateMac(self):
         stats = linklayer_pb2.macStatistics()
-        stats.ParseFromString(self.listenerMacStats.string)
+        stats.ParseFromString(self.listenerMacEvent.string)
         
         # set gui
         self.ui.rttValue.setText(str(format(stats.rtt, '.2f')) + ' ms')
@@ -212,17 +226,26 @@ class mainDialog(QtGui.QDialog):
         self.ui.retransValue.setText(str(stats.txPerPacket))
         self.ui.cwValue.setText(str(stats.minCw) + '/' + str(stats.curCw) + '/' + str(stats.maxCw))
         self.ui.txRateValue.setText(str(stats.txRate))
-
+        
+        # update txstats (column 1)
+        for nodeStats in stats.txStats:
+            row = self.getNeighbortableRow(nodeStats.address)
+            self.ui.neighborTable.setItem(row, 1, QtGui.QTableWidgetItem(str(nodeStats.packets)))
+        
+        # update rxstats (column 2)
+        for nodeStats in stats.rxStats:
+            row = self.getNeighbortableRow(nodeStats.address)
+            self.ui.neighborTable.setItem(row, 2, QtGui.QTableWidgetItem(str(nodeStats.packets)))
             
     def quitWindow(self):
         # ask listener thread to stop
-        self.listenerFastSensing.stop()
-        self.listenerFineSensing.stop()
-        self.listenerChStatusUpdate.stop()
-        self.listenerQosReq.stop()
-        self.listenerLinkStats.stop()
-        self.listenerDemodStats.stop()
-        self.listenerMacStats.stop()
+        #self.listenerFastSensing.stop()
+        #self.listenerFineSensing.stop()
+        #self.listenerChStatusUpdate.stop()
+        #self.listenerQosReq.stop()
+        #self.listenerLinkStats.stop()
+        self.listenerPhyEvent.stop()
+        self.listenerMacEvent.stop()
         self.close()
 
 

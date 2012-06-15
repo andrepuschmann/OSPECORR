@@ -1,5 +1,10 @@
 package linklayer;
 
+message nodeStats {
+  required string address = 1;
+  required int32 packets = 2;
+}
+
 message macStatistics {
   optional int32 txQueueSize = 1;
   optional int32 txQueueCapacity = 2;
@@ -10,4 +15,6 @@ message macStatistics {
   optional int32 curCw = 7;
   optional float rtt = 8;
   optional float pktSize = 9;
+  repeated nodeStats txStats = 10;
+  repeated nodeStats rxStats = 11;
 }

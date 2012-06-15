@@ -19,13 +19,9 @@ components:
 
    - name: pySysMoCo
      gates:
-      - fastSensingResult: sub
-      - fineSensingResult: sub
-      - chStatusUpdate: sub
-      - qosRequirements: sub
-      - linkStatistics: sub
-      - demodStatistics: sub
-      - macStatistics: sub
+      - phyevent: sub
+      - macevent: sub
+      - appevent: sub
       
    - name: drm
      gates:
@@ -39,33 +35,23 @@ components:
       - data: pub
       - event: sub
 
-   - name: examplePublisher
+   - name: ExampleModule
      gates:
-      - fastSensingResult: pub
+      - phyevent: sub
 
-   # start of Iris components
-   
-   - name: FftSensingController
+   # This is a abstract name for PHY layer component
+   # such as a sensing block or demodulator
+   - name: PhyComponent
      gates:
-      - fineSensingResult: pub
-      - chStatusUpdate: pub
+      - event: pub
 
-   - name: HandoverController
+   - name: MacComponent
      gates:
-      - chStatusUpdate: pub
+      - event: pub
 
-   - name: TrafficAnalyzerComponent
+   - name: AppComponent
      gates:
-      - qosRequirements: pub
-      - linkStatistics: pub
-
-   - name: LiquidOfdmDemodComponent
-     gates:
-      - demodStatistics: pub
-
-   - name: CsmaMacComponent
-     gates:
-      - macStatistics: pub
+      - event: pub
 
 #
 # component connections (component_a.gate_x -- component_b.gate_y)
@@ -73,14 +59,10 @@ components:
 
 connections:
 
-   - [ pySysMoCo.fastSensingResult,   examplePublisher.fastSensingResult ]
-   - [ pySysMoCo.fineSensingResult,   FftSensingController.fineSensingResult ]
-   - [ pySysMoCo.chStatusUpdate,      FftSensingController.chStatusUpdate ]
-   - [ pySysMoCo.chStatusUpdate,      HandoverController.chStatusUpdate ]
-   - [ pySysMoCo.qosRequirements,     TrafficAnalyzerComponent.qosRequirements ]
-   - [ pySysMoCo.linkStatistics,      TrafficAnalyzerComponent.linkStatistics ]
-   - [ pySysMoCo.demodStatistics,     LiquidOfdmDemodComponent.demodStatistics ]
-   - [ pySysMoCo.macStatistics,       CsmaMacComponent.macStatistics ]
+   - [ pySysMoCo.phyevent,            PhyComponent.event ]
+   - [ pySysMoCo.macevent,            MacComponent.event ]
+   - [ pySysMoCo.appevent,            AppComponent.event ]
+   - [ ExampleModule.phyevent,        PhyComponent.event ]
    - [ drmgenerator.control,          drm.control ]
    - [ drmgenerator.data,             drm.data ]
-   - [ drm.event,                  drmgenerator.event ]
+   - [ drm.event,                     drmgenerator.event ]

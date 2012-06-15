@@ -10,4 +10,5 @@ ADD_SUBDIRECTORY (drmgenerator)
 ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/drmgenerator/")
 # these are the mandatory components
 ADD_SUBDIRECTORY (pySysMoCo)
-ADD_SUBDIRECTORY (examplePublisher)
+ADD_SUBDIRECTORY (examplePhyPublisher)
+ADD_SUBDIRECTORY (examplePhySubscriber)
