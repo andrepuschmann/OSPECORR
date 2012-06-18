@@ -22,6 +22,7 @@ components:
       - phyevent: sub
       - macevent: sub
       - appevent: sub
+      - radconfcontrol: req
       
    - name: drm
      gates:
@@ -38,6 +39,10 @@ components:
    - name: ExampleModule
      gates:
       - phyevent: sub
+
+   - name: RadioConfigController
+     gates:
+      - control: rep
 
    # This is a abstract name for PHY layer component
    # such as a sensing block or demodulator
