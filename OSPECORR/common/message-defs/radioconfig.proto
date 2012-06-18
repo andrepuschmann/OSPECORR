@@ -29,10 +29,10 @@ message RadioEngine {
 }
 
 message RadioConfig {
-  required int32 nr_Engines = 1;
-  required int32 nr_Components = 2;
-  repeated RadioEngine Engines = 3;
-  repeated RadioComponent Components = 4;
+  required int32 nr_engines = 1;
+  required int32 nr_components = 2;
+  repeated RadioEngine engines = 3;
+  repeated RadioComponent components = 4;
 }
 
 message RadioConfigControl {
