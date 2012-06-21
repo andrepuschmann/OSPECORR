@@ -1,20 +1,24 @@
-package linklayer;
+package scl_linklayer;
 
-message nodeStats {
+message NodeStats {
   required string address = 1;
   required int32 packets = 2;
 }
 
-message macStatistics {
-  optional int32 txQueueSize = 1;
-  optional int32 txQueueCapacity = 2;
-  optional int32 txPerPacket = 3;
-  optional int32 txRate = 4;
-  optional int32 minCw = 5;
-  optional int32 maxCw = 6;
-  optional int32 curCw = 7;
-  optional float rtt = 8;
-  optional float pktSize = 9;
-  repeated nodeStats txStats = 10;
-  repeated nodeStats rxStats = 11;
+message MacMessage {
+  optional int32 tx_queue_size = 1;
+  optional int32 tx_queue_capacity = 2;
+  optional int32 tx_retries_per_packet = 3;
+  optional int32 tx_rate = 4;
+  optional int32 min_cw = 5;
+  optional int32 max_cw = 6;
+  optional int32 current_cw = 7;
+  optional float avg_rtt = 8;
+  optional float avg_pkt_size = 9;
+  repeated NodeStats tx_stats = 10;
+  repeated NodeStats rx_stats = 11;
+}
+
+message LinkLayerMessage {
+  optional MacMessage mac = 1;
 }
