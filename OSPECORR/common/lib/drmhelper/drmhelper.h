@@ -9,6 +9,7 @@
 #ifndef DRMHELPER_H
 #define DRMHELPER_H
 
+#include "boost/date_time/posix_time/posix_time.hpp"
 #include "sclhelper.hpp"
 #include "drm.pb.h"
 
@@ -45,6 +46,13 @@ class DrmHelper
             }
             return drmChannelMap;
         };
+        
+        static uint64_t getTimeSinceEpoch()
+        {
+            boost::posix_time::ptime epoch = boost::posix_time::time_from_string("1970-01-01 00:00:00.000");
+            boost::posix_time::ptime other = boost::posix_time::microsec_clock::local_time();
+            return (other-epoch).total_milliseconds();
+        }
 };
 
 #endif // DRMHELPER_H
