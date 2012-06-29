@@ -1,24 +1,60 @@
-# - try to find Qwt libraries and include files
-# QWT_INCLUDE_DIR where to find qwt_plot.h, etc.
-# QWT_LIBRARIES libraries to link against
-# QWT_FOUND If false, do not try to use Qwt
+# - Try to find the Qwt includes and library
+# which defines
+#
+# QWT_FOUND - system has Qwt
+# QWT_INCLUDE_DIR - where to find qwt.h
+# QWT_LIBRARIES - the libraries to link against to use Qwt
+# QWT_LIBRARY - where to find the Qwt library (not for general use)
 
-find_path (QWT_INCLUDE_DIRS
-	NAMES qwt_plot.h
-	PATHS
-	/usr/local/include/qwt-qt4
-	/usr/local/include/qwt
-	/usr/include/qwt-qt4
-	/usr/include/qwt
-)
+# copyright (c) 2006 Thomas Moenicke thomas.moenicke@kdemail.net
+#
+# Redistribution and use is allowed according to the terms of the BSD license.
 
-find_library (QWT_LIBRARIES
-	NAMES qwt-qt4 qwt
-	PATHS /usr/local/lib /usr/lib
-)
+IF(NOT QT4_FOUND)
+    INCLUDE(FindQt4)
+ENDIF(NOT QT4_FOUND)
 
-# handle the QUIETLY and REQUIRED arguments and set QWT_FOUND to TRUE if 
-# all listed variables are TRUE
-include ( FindPackageHandleStandardArgs )
-find_package_handle_standard_args( Qwt DEFAULT_MSG QWT_LIBRARIES QWT_INCLUDE_DIRS )
-MARK_AS_ADVANCED(QWT_LIBRARIES QWT_INCLUDE_DIRS)
+SET(QWT_FOUND "NO")
+
+IF(QT4_FOUND)
+    FIND_PATH(QWT_INCLUDE_DIR qwt.h
+    /usr/local/qwt/include
+    /usr/local/include
+    /usr/include/qwt
+    /usr/include
+    )
+
+    SET(QWT_NAMES ${QWT_NAMES} qwt libqwt)
+    FIND_LIBRARY(QWT_LIBRARY
+        NAMES ${QWT_NAMES}
+        PATHS /usr/local/qwt/lib /usr/local/lib /usr/lib
+    )
+
+    IF (QWT_LIBRARY)
+
+        SET(QWT_LIBRARIES ${QWT_LIBRARY})
+        SET(QWT_FOUND "YES")
+
+        IF (CYGWIN)
+            IF(BUILD_SHARED_LIBS)
+            # No need to define QWT_USE_DLL here, because it's default for Cygwin.
+            ELSE(BUILD_SHARED_LIBS)
+            SET (QWT_DEFINITIONS -DQWT_STATIC)
+            ENDIF(BUILD_SHARED_LIBS)
+        ENDIF (CYGWIN)
+
+    ENDIF (QWT_LIBRARY)
+ENDIF(QT4_FOUND)
+
+IF (QWT_FOUND)
+  IF (NOT QWT_FIND_QUIETLY)
+    MESSAGE(STATUS "Found Qwt: ${QWT_LIBRARY}, includes ${QWT_INCLUDE_DIR}")
+  ENDIF (NOT QWT_FIND_QUIETLY)
+ELSE (QWT_FOUND)
+  IF (QWT_FIND_REQUIRED)
+    MESSAGE(FATAL_ERROR "Could not find Qwt library")
+  ENDIF (QWT_FIND_REQUIRED)
+ENDIF (QWT_FOUND)
+
+MARK_AS_ADVANCED(QWT_INCLUDE_DIR QWT_LIBRARY)
+
