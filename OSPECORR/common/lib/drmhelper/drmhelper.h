@@ -13,8 +13,26 @@
 #include "sclhelper.hpp"
 #include "drm.pb.h"
 
+typedef scl_drm::channelSpec ChannelSpec;
 typedef std::vector<scl_drm::channelSpec> ChannelMap;
 typedef std::vector<scl_drm::channelSpec>::iterator ChannelMapIt;
+
+//! Exception which can be thrown by DRM helper class
+class DrmHelperException : public std::exception
+{
+private:
+    std::string d_message;
+public:
+    DrmHelperException(const std::string &message) throw()
+        :exception(), d_message(message)
+    {};
+    virtual const char* what() const throw()
+    {
+        return d_message.c_str();
+    };
+    virtual ~DrmHelperException() throw()
+    {};
+};
 
 class DrmHelper
 {
@@ -45,6 +63,30 @@ class DrmHelper
                 drmChannelMap.push_back(reply.channelmap(i));
             }
             return drmChannelMap;
+        };
+
+        static ChannelSpec getChannel(const scl_drm::channelProp property)
+        {
+            GateFactory &myFactory = GateFactory::getInstance();
+            sclGate *controlGate = myFactory.createGate("drmgenerator", "control");
+
+            scl_drm::control request, reply;
+
+            // create control packet to request channel specification
+            cout << "Send GET_SINGLE_CHANNEL request" << endl;
+            request.set_type(scl_drm::REQUEST);
+            request.set_command(scl_drm::GET_SINGLE_CHANNEL);
+            request.set_prop(property);
+            controlGate->sendProto(request);
+
+            // wait for answer from DRM
+            cout << "Wait for reply .." << endl;
+            controlGate->recvProto(reply);
+            assert(reply.type() == scl_drm::REPLY);
+            cout << "Got reply:" << endl;
+            if (reply.channelmap_size() == 0)
+                throw DrmHelperException("DRM did not send a proper channel configuration.");
+            return reply.channelmap(0);
         };
         
         static uint64_t getTimeSinceEpoch()
