@@ -21,7 +21,7 @@ enum channelProp {
 message statusUpdate {
   required uint32 channel_id = 1 ;
   required uint64 timestamp = 2 ;
-  required int32 rssi = 3 ;
+  optional int32 rssi = 3 ;
   repeated int32 fft = 4 [packed=true];
   enum statusType {
     BUSY_PU = 0;

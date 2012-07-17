@@ -20,7 +20,7 @@ components:
    - name: pySysMoCo
      gates:
       - phyevent: sub
-      - macevent: sub
+      - linklayerevent: sub
       - appevent: sub
       - radconfcontrol: req
       
@@ -50,7 +50,7 @@ components:
      gates:
       - event: pub
 
-   - name: MacComponent
+   - name: LinkLayerComponent
      gates:
       - event: pub
 
@@ -65,7 +65,7 @@ components:
 connections:
 
    - [ pySysMoCo.phyevent,            PhyComponent.event ]
-   - [ pySysMoCo.macevent,            MacComponent.event ]
+   - [ pySysMoCo.linklayerevent,      LinkLayerComponent.event ]
    - [ pySysMoCo.appevent,            AppComponent.event ]
    - [ ExampleModule.phyevent,        PhyComponent.event ]
    - [ drmgenerator.control,          drm.control ]

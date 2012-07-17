@@ -43,7 +43,7 @@ class mainDialog(QtGui.QDialog):
     #listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
     #listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
     listenerPhyEvent = ListenerTask(None,'pySysMoCo', 'phyevent')
-    listenerMacEvent = ListenerTask(None,'pySysMoCo', 'macevent')
+    listenerLinkLayerEvent = ListenerTask(None,'pySysMoCo', 'linklayerevent')
     
     
     def __init__(self):
@@ -77,13 +77,13 @@ class mainDialog(QtGui.QDialog):
         #self.listenerQosReq.recvSignal.connect(self.updateQosReq)
         #self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
         self.listenerPhyEvent.recvSignal.connect(self.updatePhy)
-        self.listenerMacEvent.recvSignal.connect(self.updateMac)
+        self.listenerLinkLayerEvent.recvSignal.connect(self.updateLinkLayer)
         
         # start listener threads
         #self.listenerQosReq.start()
         #self.listenerLinkStats.start()
         self.listenerPhyEvent.start()
-        self.listenerMacEvent.start()
+        self.listenerLinkLayerEvent.start()
         
 
     def pauseButtonClicked(self):
@@ -216,24 +216,24 @@ class mainDialog(QtGui.QDialog):
             row = numRows
         return row
     
-    def updateMac(self):
-        stats = linklayer_pb2.macStatistics()
-        stats.ParseFromString(self.listenerMacEvent.string)
+    def updateLinkLayer(self):
+        stats = linklayer_pb2.LinkLayerMessage()
+        stats.ParseFromString(self.listenerLinkLayerEvent.string)
         
         # set gui
-        self.ui.rttValue.setText(str(format(stats.rtt, '.2f')) + ' ms')
-        self.ui.txQueueValue.setText(str(stats.txQueueSize) + '/' + str(stats.txQueueCapacity))
-        self.ui.retransValue.setText(str(stats.txPerPacket))
-        self.ui.cwValue.setText(str(stats.minCw) + '/' + str(stats.curCw) + '/' + str(stats.maxCw))
-        self.ui.txRateValue.setText(str(stats.txRate))
+        self.ui.rttValue.setText(str(format(stats.mac.avg_rtt, '.2f')) + ' ms')
+        self.ui.txQueueValue.setText(str(stats.mac.tx_queue_size) + '/' + str(stats.mac.tx_queue_capacity))
+        self.ui.retransValue.setText(str(stats.mac.tx_retries_per_packet))
+        self.ui.cwValue.setText(str(stats.mac.min_cw) + '/' + str(stats.mac.current_cw) + '/' + str(stats.mac.max_cw))
+        self.ui.txRateValue.setText(str(stats.mac.tx_rate))
         
         # update txstats (column 1)
-        for nodeStats in stats.txStats:
+        for nodeStats in stats.mac.tx_stats:
             row = self.getNeighbortableRow(nodeStats.address)
             self.ui.neighborTable.setItem(row, 1, QtGui.QTableWidgetItem(str(nodeStats.packets)))
         
         # update rxstats (column 2)
-        for nodeStats in stats.rxStats:
+        for nodeStats in stats.mac.rx_stats:
             row = self.getNeighbortableRow(nodeStats.address)
             self.ui.neighborTable.setItem(row, 2, QtGui.QTableWidgetItem(str(nodeStats.packets)))
             
@@ -245,7 +245,7 @@ class mainDialog(QtGui.QDialog):
         #self.listenerQosReq.stop()
         #self.listenerLinkStats.stop()
         self.listenerPhyEvent.stop()
-        self.listenerMacEvent.stop()
+        self.listenerLinkLayerEvent.stop()
         self.close()
 
 

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <boost/smart_ptr.hpp>
 #include "sclhelper.hpp"
 #include "phy.pb.h"
 
@@ -8,8 +7,8 @@ using namespace phy;
 
 int main()
 {
-    boost::shared_ptr< SocketMap > socketMap(new SocketMap("ExampleModule"));
-    boost::shared_ptr< sclGate > gate(new sclGate(socketMap.get(), "phyevent"));
+    GateFactory &myFactory = GateFactory::getInstance();
+    sclGate *gate = myFactory.createGate("ExampleModule", "phyevent");
     
     // give SCL some time to startup
     sleep(1);
