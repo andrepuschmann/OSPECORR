@@ -227,37 +227,31 @@ class mainDialog(QtGui.QDialog):
         # set radioconfig for later reference
         self.radioConfig = reply.radioconf
 
+        # FIXME: change to tree view and add engines too
         # update component list
         self.ui.componentList.clear()
-        for i in range(self.radioConfig.nr_components):
-            radComponent = self.radioConfig.components[i]
-            listitem = self.ui.componentList.addItem(str(radComponent.component_name))
+        for i in self.radioConfig.engines:
+            for k in i.components:
+                self.ui.componentList.addItem(str(k.name))
 
         # make first item active
-        firstitem = self.ui.componentList.item(0)
-        self.ui.componentList.setCurrentItem(firstitem)
+        self.ui.componentList.setCurrentItem(self.ui.componentList.item(0))
 
 
     def updateParamTable(self):
-        print "updateParamTable()"
+        #print "updateParamTable()"
         if(self.radioConfig != 0):
-            print "update"
             # clear table
-            print "rowcount before: " + str(self.ui.parameterTable.rowCount())
-            self.ui.parameterTable.clear()
-            for i in xrange(self.ui.parameterTable.rowCount()):
-                self.ui.parameterTable.removeRow(i+1)
-            #FIXME: clearing table doesn't work
-            #assert(self.ui.parameterTable.rowCount() == 0)
+            self.ui.parameterTable.clearContents()
+            self.ui.parameterTable.setRowCount(0)
+            # get current component
             currentItem = self.ui.componentList.currentRow()
-            radComponent = self.radioConfig.components[currentItem]
-            for j in range(radComponent.nr_parameters):
-                print "param_" + str(j)
+            radComponent = self.radioConfig.engines[0].components[currentItem]
+            for j in radComponent.parameters:
                 numRows = self.ui.parameterTable.rowCount()
                 self.ui.parameterTable.insertRow(numRows)
-                radParameter = radComponent.paramters[j]
-                self.ui.parameterTable.setItem(j,0, QTableWidgetItem(radParameter.param_name))
-                self.ui.parameterTable.setItem(j,1, QTableWidgetItem(radParameter.param_value))
+                self.ui.parameterTable.setItem(numRows, 0, QTableWidgetItem(j.name))
+                self.ui.parameterTable.setItem(numRows, 1, QTableWidgetItem(j.value))
 
 
     def reconfigRadio(self):
@@ -270,26 +264,32 @@ class mainDialog(QtGui.QDialog):
         request.type = radioconfig_pb2.REQUEST
         request.command = radioconfig_pb2.SET_RADIO_CONFIG
 
-        request.radioconf.nr_engines = 1
-        request.radioconf.nr_components = 1
-
         # get selected component and add to reconf request
-        currentItem = self.ui.componentList.currentRow()
-        radComponent = self.radioConfig.components[currentItem]
+        currentComponent = self.ui.componentList.currentItem()
+        print currentComponent.text()
 
-        configParam = request.radioconf.components.add()
-        configParam.component_name = radComponent.component_name
-        configParam.engine_index = radComponent.engine_index
-        configParam.nr_parameters = radComponent.nr_parameters
+        # add engine and just use name of first
+        newEngine = request.radioconf.engines.add()
 
-        # add all parameter that have changes
+        # find the engine the component lives in and set name
+        for engine in self.radioConfig.engines:
+            for component in engine.components:
+                if component.name == currentComponent.text():
+                    # create new engine in request object
+                    newEngine.name = engine.name
+
+        newComponent = newEngine.components.add()
+        newComponent.name = str(currentComponent.text())
+
+        # add all parameter that have changed
         # FIXME: compare with self.radioConfig and really just update if changes
-        for j in range(radComponent.nr_parameters):
-            parameter = configParam.paramters.add()
-            radParameter = radComponent.paramters[j]
-            item = self.ui.parameterTable.item(j,1)
-            parameter.param_value = str(item.text())
-            parameter.param_name = radParameter.param_name
+        numRows = self.ui.parameterTable.rowCount()
+        for row in xrange(0, numRows):
+            newParameter = newComponent.parameters.add()
+            # name is column 0
+            newParameter.name = str(self.ui.parameterTable.item(row, 0).text())
+            # value is column 1
+            newParameter.value = str(self.ui.parameterTable.item(row, 1).text())
 
         #send request
         string = request.SerializeToString()
