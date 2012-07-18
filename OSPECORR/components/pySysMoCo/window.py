@@ -245,13 +245,15 @@ class mainDialog(QtGui.QDialog):
             self.ui.parameterTable.clearContents()
             self.ui.parameterTable.setRowCount(0)
             # get current component
-            currentItem = self.ui.componentList.currentRow()
-            radComponent = self.radioConfig.engines[0].components[currentItem]
-            for j in radComponent.parameters:
-                numRows = self.ui.parameterTable.rowCount()
-                self.ui.parameterTable.insertRow(numRows)
-                self.ui.parameterTable.setItem(numRows, 0, QTableWidgetItem(j.name))
-                self.ui.parameterTable.setItem(numRows, 1, QTableWidgetItem(j.value))
+            currentItem = self.ui.componentList.currentItem().text()
+            for engine in self.radioConfig.engines:
+                for component in engine.components:
+                    if currentItem == component.name:
+                        for param in component.parameters:
+                            numRows = self.ui.parameterTable.rowCount()
+                            self.ui.parameterTable.insertRow(numRows)
+                            self.ui.parameterTable.setItem(numRows, 0, QTableWidgetItem(param.name))
+                            self.ui.parameterTable.setItem(numRows, 1, QTableWidgetItem(param.value))
 
 
     def reconfigRadio(self):
