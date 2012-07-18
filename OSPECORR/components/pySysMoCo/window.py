@@ -33,9 +33,11 @@ import time
 
 # import own classes
 from listener import ListenerTask
+import scl
 import application_pb2
 import linklayer_pb2
 import phy_pb2
+import radioconfig_pb2
 
 
 class mainDialog(QtGui.QDialog):
@@ -43,9 +45,9 @@ class mainDialog(QtGui.QDialog):
     #listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
     #listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
     listenerPhyEvent = ListenerTask(None,'pySysMoCo', 'phyevent')
-    listenerLinkLayerEvent = ListenerTask(None,'pySysMoCo', 'linklayerevent')
-    
-    
+    listenerLinkLayerEvent = ListenerTask(None,'pySysMoCo', 'linklayerevent')    
+    radioConfig = radioconfig_pb2.RadioConfig()
+
     def __init__(self):
         QtGui.QDialog.__init__(self)
 
@@ -67,6 +69,12 @@ class mainDialog(QtGui.QDialog):
         self.ui.clearButton.clicked.connect(self.clearButtonClicked)
         self.ui.closeButton.clicked.connect(self.quitWindow)
         self.ui.pauseButton.clicked.connect(self.pauseButtonClicked)
+        # Radio Configuration Tab
+        self.ui.getRadioButton.clicked.connect(self.getRadio)
+        self.ui.applyChangesButton.clicked.connect(self.reconfigRadio)
+        self.ui.componentList.currentItemChanged.connect(self.updateParamTable)
+        self.ui.parameterTable.setHorizontalHeaderLabels(["Name", "Value"])
+
         # neighbortable has 3 columns (address, tx packets, rx packets)
         self.ui.neighborTable.setColumnCount(3)
         self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets"]) 
@@ -198,6 +206,97 @@ class mainDialog(QtGui.QDialog):
                 #self.axes.set_ylabel('Power in dBm')
                 #self.axes.axis([0, 512, -140, -70])
                 #self.canvas.draw()
+
+
+    def getRadio(self):
+
+        map = scl.generate_map("pySysMoCo")
+        radioconfigcontrol = map["radioconfcontrol"]
+
+        #Create request for getting ratio
+        request = radioconfig_pb2.RadioConfigControl()
+        request.type = radioconfig_pb2.REQUEST
+        request.command = radioconfig_pb2.GET_RADIO_CONFIG
+        string = request.SerializeToString()
+        radioconfigcontrol.send(string)
+
+        #Create Reply
+        reply = radioconfig_pb2.RadioConfigControl()
+        string = radioconfigcontrol.recv()
+        reply.ParseFromString(string)
+        # set radioconfig for later reference
+        self.radioConfig = reply.radioconf
+
+        # update component list
+        self.ui.componentList.clear()
+        for i in range(self.radioConfig.nr_components):
+            radComponent = self.radioConfig.components[i]
+            listitem = self.ui.componentList.addItem(str(radComponent.component_name))
+
+        # make first item active
+        firstitem = self.ui.componentList.item(0)
+        self.ui.componentList.setCurrentItem(firstitem)
+
+
+    def updateParamTable(self):
+        print "updateParamTable()"
+        if(self.radioConfig != 0):
+            print "update"
+            # clear table
+            print "rowcount before: " + str(self.ui.parameterTable.rowCount())
+            self.ui.parameterTable.clear()
+            for i in xrange(self.ui.parameterTable.rowCount()):
+                self.ui.parameterTable.removeRow(i+1)
+            #FIXME: clearing table doesn't work
+            #assert(self.ui.parameterTable.rowCount() == 0)
+            currentItem = self.ui.componentList.currentRow()
+            radComponent = self.radioConfig.components[currentItem]
+            for j in range(radComponent.nr_parameters):
+                print "param_" + str(j)
+                numRows = self.ui.parameterTable.rowCount()
+                self.ui.parameterTable.insertRow(numRows)
+                radParameter = radComponent.paramters[j]
+                self.ui.parameterTable.setItem(j,0, QTableWidgetItem(radParameter.param_name))
+                self.ui.parameterTable.setItem(j,1, QTableWidgetItem(radParameter.param_value))
+
+
+    def reconfigRadio(self):
+        print "reconfigRadio called"
+        map = scl.generate_map("pySysMoCo")
+        radioconfigcontrol = map["radioconfcontrol"]
+
+        #Create request for radio reconfiguration
+        request = radioconfig_pb2.RadioConfigControl()
+        request.type = radioconfig_pb2.REQUEST
+        request.command = radioconfig_pb2.SET_RADIO_CONFIG
+
+        request.radioconf.nr_engines = 1
+        request.radioconf.nr_components = 1
+
+        # get selected component and add to reconf request
+        currentItem = self.ui.componentList.currentRow()
+        radComponent = self.radioConfig.components[currentItem]
+
+        configParam = request.radioconf.components.add()
+        configParam.component_name = radComponent.component_name
+        configParam.engine_index = radComponent.engine_index
+        configParam.nr_parameters = radComponent.nr_parameters
+
+        # add all parameter that have changes
+        # FIXME: compare with self.radioConfig and really just update if changes
+        for j in range(radComponent.nr_parameters):
+            parameter = configParam.paramters.add()
+            radParameter = radComponent.paramters[j]
+            item = self.ui.parameterTable.item(j,1)
+            parameter.param_value = str(item.text())
+            parameter.param_name = radParameter.param_name
+
+        #send request
+        string = request.SerializeToString()
+        radioconfigcontrol.send(string)
+        #wait for reply, fixme: check result
+        string = radioconfigcontrol.recv()
+
 
     def getNeighbortableRow(self, address):
         # find address in table and set row if found
