@@ -36,7 +36,7 @@ Thus, our system has the following benefits:
 1. Install some basic packet dependencies onto your system. E.g. using Ubuntu, invoke the following:
 
    ```bash
-$ sudo apt-get install build-essential libboost-all-dev libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
+$ sudo apt-get install build-essential libboost-all-dev git libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
 ```   
 
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
@@ -48,7 +48,7 @@ $ git clone git://github.com/andrepuschmann/OSPECORR.git MOBICOM
    
     ```bash
 $ cd ./MOBICOM
-$ ./gitsub_init.sh
+$ ./gitsub_update.sh
 ```
     
 4. Copy the content of ```example.bashrc``` into your local bashrc and edit it if required, reinstalize your environment
