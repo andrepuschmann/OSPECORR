@@ -1,5 +1,16 @@
 package scl_linklayer;
 
+enum EventType {
+  EV_PU_ACTIVE = 1;
+  EV_ERROR_RATE = 2;
+  EV_CONNECTION_LOSS = 3;
+  EV_SPECTRUM_HANDOVER = 4;
+  EV_LINK_DISCONNECT = 5;
+  EV_LINK_IDLE = 6;
+  EV_LINK_HIGH_LOAD = 7;
+  EV_LINK_LOW_LOAD = 8;
+}
+
 message NodeStats {
   required string address = 1;
   required int32 packets = 2;

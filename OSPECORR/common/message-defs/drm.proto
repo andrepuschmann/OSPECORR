@@ -9,6 +9,8 @@ enum controlType {
 enum commandId {
   GET_CHANNEL_LIST = 1;
   GET_SINGLE_CHANNEL = 2;
+  PUBLISH_CHANNEL_LIST = 3;
+  PUBLISH_STATE_UPDATE = 4;
 }
 
 enum channelProp {

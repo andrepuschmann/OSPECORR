@@ -1,10 +1,10 @@
 package phy;
 
 enum ChannelState {
-    UNKNOWN = 0;
-    IDLE = 1;
-    BUSY = 2;
-    PU_BUSY = 2;
+  UNKNOWN = 0;
+  IDLE = 1;
+  BUSY = 2;
+  PU_BUSY = 2;
 }
 
 message PhyMessage {
