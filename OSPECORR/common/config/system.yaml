@@ -22,7 +22,9 @@ components:
       - phyevent: sub
       - linklayerevent: sub
       - appevent: sub
+      - drmevent: sub
       - radioconfcontrol: req
+      - drmclientdata: sub
       
    - name: drm
      gates:
@@ -30,7 +32,7 @@ components:
       - data: sub
       - event: pub
 
-   - name: drmgenerator
+   - name: drmclient
      gates:
       - control: req
       - data: pub
@@ -67,8 +69,10 @@ connections:
    - [ pySysMoCo.phyevent,            PhyComponent.event ]
    - [ pySysMoCo.linklayerevent,      LinkLayerComponent.event ]
    - [ pySysMoCo.appevent,            AppComponent.event ]
+   - [ pySysMoCo.drmevent,            drm.event ]
+   - [ pySysMoCo.drmclientdata,       drmclient.data ]
    - [ pySysMoCo.radioconfcontrol,    RadioConfigController.control ]
    - [ ExampleModule.phyevent,        PhyComponent.event ]
-   - [ drmgenerator.control,          drm.control ]
-   - [ drmgenerator.data,             drm.data ]
-   - [ drm.event,                     drmgenerator.event ]
+   - [ drmclient.control,             drm.control ]
+   - [ drmclient.data,                drm.data ]
+   - [ drm.event,                     drmclient.event ]
