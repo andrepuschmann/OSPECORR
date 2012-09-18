@@ -64,7 +64,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_overview">
       <attribute name="title">
@@ -141,12 +141,21 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_7">
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+               <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
                 <item>
                  <widget class="QLabel" name="label1">
                   <property name="text">
-                   <string>Ch1
-2.400 GHz</string>
+                   <string>Ch1</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="freqChannel1">
+                  <property name="text">
+                   <string>none</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -169,12 +178,21 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1">
                 <item>
                  <widget class="QLabel" name="label2">
                   <property name="text">
-                   <string>Ch2
-2.402 GHz</string>
+                   <string>Ch2</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="freqChannel2">
+                  <property name="text">
+                   <string>none</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -197,12 +215,21 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
                 <item>
                  <widget class="QLabel" name="label3">
                   <property name="text">
-                   <string>Ch3
-2.404 GHz</string>
+                   <string>Ch3</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="freqChannel3">
+                  <property name="text">
+                   <string>none</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -225,12 +252,21 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,1">
                 <item>
                  <widget class="QLabel" name="label4">
                   <property name="text">
-                   <string>Ch4
-2.406 GHz</string>
+                   <string>Ch4</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="freqChannel4">
+                  <property name="text">
+                   <string>none</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -253,12 +289,21 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0,1">
                 <item>
                  <widget class="QLabel" name="label5">
                   <property name="text">
-                   <string>Ch5
-2.408 GHz</string>
+                   <string>Ch5</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="freqChannel5">
+                  <property name="text">
+                   <string>none</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>

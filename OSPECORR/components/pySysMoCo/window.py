@@ -33,6 +33,7 @@ import time
 
 # import own classes
 from listener import ListenerTask
+from drmhelper import *
 import scl
 import application_pb2
 import linklayer_pb2
@@ -45,8 +46,11 @@ class mainDialog(QtGui.QDialog):
     #listenerQosReq = ListenerTask(None,'pySysMoCo', 'qosRequirements')
     #listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
     listenerPhyEvent = ListenerTask(None,'pySysMoCo', 'phyevent')
-    listenerLinkLayerEvent = ListenerTask(None,'pySysMoCo', 'linklayerevent')    
+    listenerLinkLayerEvent = ListenerTask(None,'pySysMoCo', 'linklayerevent')
+    listenerDrmEvent = ListenerTask(None,'pySysMoCo', 'drmevent')
+    listenerDrmClientData = ListenerTask(None,'pySysMoCo', 'drmclientdata')
     radioConfig = radioconfig_pb2.RadioConfig()
+    displaychannellist = {}
 
     def __init__(self):
         QtGui.QDialog.__init__(self)
@@ -86,12 +90,14 @@ class mainDialog(QtGui.QDialog):
         #self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
         self.listenerPhyEvent.recvSignal.connect(self.updatePhy)
         self.listenerLinkLayerEvent.recvSignal.connect(self.updateLinkLayer)
+        self.listenerDrmEvent.recvSignal.connect(self.updateDrmEvent)
+        self.listenerDrmClientData.recvSignal.connect(self.updateDrmClientData)
         
         # start listener threads
-        #self.listenerQosReq.start()
-        #self.listenerLinkStats.start()
         self.listenerPhyEvent.start()
         self.listenerLinkLayerEvent.start()
+        self.listenerDrmEvent.start()
+        self.listenerDrmClientData.start()
         
 
     def pauseButtonClicked(self):
@@ -116,29 +122,60 @@ class mainDialog(QtGui.QDialog):
         self.ui.currentChannel.setText('none')
         self.ui.messageLog.clear()
 
+    # update
+    def updateDrmClientData(self):
+        update = drm_pb2.statusUpdate()
+        update.ParseFromString(self.listenerDrmClientData.string) # fill protobuf, string is stored in listener object
+        
+        # update gui if channel_id is in displaychannelmap
+        print "updateDrmClientData"
+        if update.channel_id in self.displaychannellist:
+            print "key found"
+            print update.channel_id
+            print self.displaychannellist[update.channel_id]
+            # update channel activity
+            objectName = "self.ui.statusChannel" + str(self.displaychannellist[update.channel_id] + 1) # channel map starts with zero
+            print objectName
+            objectHandle = eval(objectName)
+            if update.status == update.FREE:
+                objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
+            elif update.status == update.BUSY_SU:
+                objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
+            elif update.status == update.BUSY_PU:
+                objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
+        
+            # this is a bad hack to grey out the former channel
+            if (self.lastChannel != update.channel_id):
+                 objectName = "self.ui.statusChannel" + str(self.displaychannellist[self.lastChanne] + 1) # channel map starts with zero
+                 objectHandle = eval(objectName)
+                 objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
+            self.lastChannel = update.channel_id
+
+        
+    def updateDrmEvent(self):
+        update = drm_pb2.control()
+        update.ParseFromString(self.listenerDrmEvent.string) # fill protobuf, string is stored in listener object
+        
+        # iterate over channel list and map the first 5 channels to be displayed
+        num_channels = 0
+        for i in update.channelMap:
+            self.displaychannellist[i.channel_id] = num_channels
+            num_channels = num_channels + 1
+            if num_channels == 5:
+                print "Maximum number of channels to display reached, abort."
+                break
+            
+        # update gui according to displaychannellist
+        for i in self.displaychannellist:
+            print self.displaychannellist[i]
+            # update center frequency label
+            objectName = "self.ui.freqChannel" + str(i) 
+            #print objectName
+            objectHandle = eval(objectName)
+            objectHandle.setText(str(update.channelMap[i - 1].f_center/1000000) + ' MHz') # channel map starts with zero
     
-    def updateChannelStatus(self):
-        update = phy_pb2.chStatusUpdate()
-        update.ParseFromString(self.listenerChStatusUpdate.string) # fill protobuf, string is stored in listener object
-        
-        # update channel activity
-        objectName = "self.ui.statusChannel" + str(update.channel + 1) # channel map starts with zero
-        # print objectName
-        objectHandle = eval(objectName)
-        if update.currentStatus == update.FREE:
-            objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
-        elif update.currentStatus == update.SU_BUSY:
-            objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
-        elif update.currentStatus == update.PU_BUSY:
-            objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
-        
-        # this is a bad hack to grey out the former channel
-        if (self.lastChannel != update.channel):
-             objectName = "self.ui.statusChannel" + str(self.lastChannel + 1) # channel map starts with zero
-             objectHandle = eval(objectName)
-             objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
-        self.lastChannel = update.channel
-        
+    
+    def updateMessageLog(self):
         # update message log
         if update.statusMessage:
             self.ui.messageLog.append(update.statusMessage)
