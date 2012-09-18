@@ -36,7 +36,7 @@ Thus, our system has the following benefits:
 1. Install some basic packet dependencies onto your system. E.g. using Ubuntu, invoke the following:
 
    ```bash
-$ sudo apt-get install build-essential libboost-all-dev libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
+$ sudo apt-get install build-essential libboost-all-dev git libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
 ```   
 
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
@@ -48,7 +48,7 @@ $ git clone git://github.com/andrepuschmann/OSPECORR.git MOBICOM
    
     ```bash
 $ cd ./MOBICOM
-$ ./gitsub_init.sh
+$ ./gitsub_update.sh
 ```
     
 4. Copy the content of ```example.bashrc``` into your local bashrc and edit it if required, reinstalize your environment
@@ -66,17 +66,37 @@ $ mkdir build
 $ cd build
 $ cmake ..
 $ make
+$ make install
 ```
-
-    Note, on the E100, you might use:
+   Note: Calling make install without sudo assumes you have right permissions to the install location (i.e /usr/local/). 
+   If that's not the case, either call it with sudo, choose a different install path or set the permissions accordingly,
+   i.e. call ```$ sudo chown -R $USER /usr/local/```
+   
+   Note: When running on ARM-based systems such as the E100, you might use the following cmake command instead:
 
     ```bash
 $ cmake -DCMAKE_TOOLCHAIN_FILE=../common/scripts/cmake/Toolchains/arm_cortex_a8_native.cmake ..
 ```    
 
-6. You're done! Try it out by starting pySysMoCo in one console and examplePublisher in another console.
+6. You're done! OSPECORR should be built and installed. Let's try it out by starting an example component which publishes
+RSSI measurements over SCL.
 
+    6.1. Start the example PHY publisher (which is a Python app and therefore requires a Python interpreter)
+    ```bash
+$ python OSPECORR/components/examplePhyPublisher/examplePhyPublisher.py
+```
+
+    6.2. Start the example PHY subscriber in another console (which is a standard C++ application and be started without parameter)
+    ```bash
+$ OSPECORR/components/examplePhySubscriber/examplePhySubscriber
+```
+    You should now be able to see the incoming measurements from the publishing application
+    
+    
+    6.3. Let's also start pySysMoCo on a third console. pySysMoCo should also be able to visualize the measurements
+    coming from the first application. Please note that we have to start pySysMoCo from the source directory as it has
+    some file dependencies such as the UI file. You should be able to see regular RSSI updates in the PHY tab of pySysMoCo.
     ```bash
 $ cd ../OSPECORR/components/pySysMoCo
-$ ./pySysMoCo.py
+$ python pySysMoCo.py
 ```
