@@ -28,6 +28,7 @@ message MacMessage {
   optional float avg_pkt_size = 9;
   repeated NodeStats tx_stats = 10;
   repeated NodeStats rx_stats = 11;
+  repeated NodeStats rx_stats_lost = 12;
 }
 
 message LinkLayerMessage {
