@@ -79,9 +79,9 @@ class mainDialog(QtGui.QDialog):
         self.ui.componentList.currentItemChanged.connect(self.updateParamTable)
         self.ui.parameterTable.setHorizontalHeaderLabels(["Name", "Value"])
 
-        # neighbortable has 3 columns (address, tx packets, rx packets)
-        self.ui.neighborTable.setColumnCount(3)
-        self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets"]) 
+        # neighbortable has 4 columns (address, tx packets, rx packets, rx lost packets)
+        self.ui.neighborTable.setColumnCount(4)
+        self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets", "Lost packets"]) 
         self.lastChannel = 0 # to reset last channel
         self.paused = False
         
@@ -374,6 +374,11 @@ class mainDialog(QtGui.QDialog):
         for nodeStats in stats.mac.rx_stats:
             row = self.getNeighbortableRow(nodeStats.address)
             self.ui.neighborTable.setItem(row, 2, QtGui.QTableWidgetItem(str(nodeStats.packets)))
+            
+        # update rxstatslost (column 3)
+        for nodeStats in stats.mac.rx_stats_lost:
+            row = self.getNeighbortableRow(nodeStats.address)
+            self.ui.neighborTable.setItem(row, 3, QtGui.QTableWidgetItem(str(nodeStats.packets)))
             
     def quitWindow(self):
         # ask listener thread to stop
