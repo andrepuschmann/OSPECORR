@@ -72,6 +72,12 @@ $ make install
    If that's not the case, either call it with sudo, choose a different install path or set the permissions accordingly,
    i.e. call ```$ sudo chown -R $USER /usr/local/```
    
+   Note: Building OSPECORR for debugging goes like this ..
+
+    ```bash
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
+```
+      
    Note: When running on ARM-based systems such as the E100, you might use the following cmake command instead:
 
     ```bash
