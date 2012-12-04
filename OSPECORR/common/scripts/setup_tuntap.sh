@@ -18,7 +18,7 @@ sudo openvpn --mktun --dev $2
 echo "Create $2 virtual network device"
 sudo ifconfig $2 $1
 echo "Configure IP $1 for device $2"
-echo "Set MTU to 2048"
-sudo ifconfig $2 mtu 2048
+echo "Set MTU to 8192"
+sudo ifconfig $2 mtu 8192
 sudo ip route add 10.0.0.0/24 dev $2
 echo "Done!"
