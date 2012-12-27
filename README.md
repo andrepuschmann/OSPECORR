@@ -36,7 +36,7 @@ Thus, our system has the following benefits:
 1. Install some basic packet dependencies onto your system. E.g. using Ubuntu, invoke the following:
 
    ```bash
-$ sudo apt-get install build-essential libboost-all-dev git libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
+$ sudo apt-get install build-essential libboost-all-dev git libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-qt4-gl python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
 ```   
 
 2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
@@ -72,6 +72,12 @@ $ make install
    If that's not the case, either call it with sudo, choose a different install path or set the permissions accordingly,
    i.e. call ```$ sudo chown -R $USER /usr/local/```
    
+   Note: Building OSPECORR for debugging goes like this ..
+
+    ```bash
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
+```
+      
    Note: When running on ARM-based systems such as the E100, you might use the following cmake command instead:
 
     ```bash
