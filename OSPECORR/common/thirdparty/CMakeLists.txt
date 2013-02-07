@@ -1,3 +1,1 @@
 ADD_SUBDIRECTORY(liquid-dsp)
-ADD_SUBDIRECTORY(click)
-ADD_SUBDIRECTORY(aodv-click)
