@@ -12,10 +12,14 @@
 #include "boost/date_time/posix_time/posix_time.hpp"
 #include "sclhelper.hpp"
 #include "drm.pb.h"
+#include "phy.pb.h"
 
-typedef scl_drm::channelSpec ChannelSpec;
 typedef std::vector<scl_drm::channelSpec> ChannelMap;
 typedef std::vector<scl_drm::channelSpec>::iterator ChannelMapIt;
+typedef std::vector<scl_drm::channelSpec>::const_iterator ChannelMapConstIt;
+
+typedef std::vector<scl_phy::BasicChannel> BasicChannelMap;
+typedef std::vector<scl_phy::BasicChannel>::const_iterator BasicChannelMapConstIt;
 
 //! Exception which can be thrown by DRM helper class
 class DrmHelperException : public std::exception
@@ -40,7 +44,7 @@ class DrmHelper
         static ChannelMap getChannelMap(void)
         {
             GateFactory &myFactory = GateFactory::getInstance();
-            sclGate *controlGate = myFactory.createGate("drmgenerator", "control");
+            sclGate *controlGate = myFactory.createGate("drmclient", "control");
             
             scl_drm::control request, reply;
 
@@ -63,12 +67,36 @@ class DrmHelper
                 drmChannelMap.push_back(reply.channelmap(i));
             }
             return drmChannelMap;
-        };
+        }
 
-        static ChannelSpec getChannel(const scl_drm::channelProp property)
+        static BasicChannelMap getBasicChannelMap(void)
+        {
+            ChannelMap drmMap = DrmHelper::getChannelMap();
+            BasicChannelMap basicMap;
+
+            for (ChannelMapIt it = drmMap.begin(); it != drmMap.end(); it++) {
+                basicMap.push_back(DrmHelper::convertToBasicChannel(*it));
+            }
+        }
+
+
+        static ChannelMap removeChannelFromMap(const scl_drm::channelSpec channel, const ChannelMap oldMap)
+        {
+            // find channel in newmap and remove it, note that we have to compare element by element
+            // because ==operator is not defined for protobuf messages
+            ChannelMap map = oldMap;
+            for (ChannelMapIt it = map.begin(); it != map.end(); ++it) {
+                if (it->f_center() == channel.f_center() && it->bandwidth() == channel.bandwidth()) {
+                    map.erase(it);
+                }
+            }
+            return map;
+        }
+
+        static scl_drm::channelSpec getChannel(const scl_drm::channelProp property)
         {
             GateFactory &myFactory = GateFactory::getInstance();
-            sclGate *controlGate = myFactory.createGate("drmgenerator", "control");
+            sclGate *controlGate = myFactory.createGate("drmclient", "control");
 
             scl_drm::control request, reply;
 
@@ -87,7 +115,34 @@ class DrmHelper
             if (reply.channelmap_size() == 0)
                 throw DrmHelperException("DRM did not send a proper channel configuration.");
             return reply.channelmap(0);
-        };
+        }
+
+
+        static void updateChannelState(const scl_drm::statusUpdate update)
+        {
+            GateFactory &myFactory = GateFactory::getInstance();
+            sclGate *dataGate = myFactory.createGate("drmclient", "data");
+            dataGate->sendProto(update);
+        }
+
+
+        static scl_phy::BasicChannel convertToBasicChannel(const scl_drm::channelSpec drmChannel)
+        {
+            scl_phy::BasicChannel basicChannel;
+            basicChannel.set_f_center(drmChannel.f_center());
+            basicChannel.set_bandwidth(drmChannel.bandwidth());
+            return basicChannel;
+        }
+
+
+        static scl_drm::channelSpec convertToDrmChannel(const scl_phy::BasicChannel basicChannel)
+        {
+            scl_drm::channelSpec drmChannel;
+            drmChannel.set_f_center(basicChannel.f_center());
+            drmChannel.set_bandwidth(basicChannel.bandwidth());
+            return drmChannel;
+        }
+
         
         static uint64_t getTimeSinceEpoch()
         {
