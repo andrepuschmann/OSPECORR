@@ -1,4 +1,4 @@
-package phy;
+package scl_phy;
 
 enum ChannelState {
   UNKNOWN = 0;
@@ -6,6 +6,14 @@ enum ChannelState {
   BUSY = 2;
   PU_BUSY = 2;
 }
+
+
+// this is the most elementary view of what a "channel" actually is, i.e. only frequency domain
+message BasicChannel {
+  required uint32 f_center = 1;
+  required uint32 bandwidth = 2;
+}
+
 
 message PhyMessage {
   optional float rssi = 1;                              // current received signal strength indicator [dB]

@@ -37,7 +37,7 @@ message statusUpdate {
 message channelSpec {
     required uint32 channel_id = 1 ;
     required uint32 f_center = 2 ;
-    required uint32 bandwith = 3 ;
+    required uint32 bandwidth = 3 ;
     required string name = 4;
     required uint32 lo_offset = 5 ;
     required string antenna = 6 ;

@@ -3,7 +3,7 @@
 #include "phy.pb.h"
 
 using namespace std;
-using namespace phy;
+using namespace scl_phy;
 
 int main()
 {
