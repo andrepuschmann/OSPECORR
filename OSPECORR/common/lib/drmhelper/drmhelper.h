@@ -88,9 +88,9 @@ class DrmHelper
             for (ChannelMapIt it = map.begin(); it != map.end(); ++it) {
                 if (it->f_center() == channel.f_center() && it->bandwidth() == channel.bandwidth()) {
                     map.erase(it);
+                    return map;
                 }
             }
-            return map;
         }
 
         static scl_drm::channelSpec getChannel(const scl_drm::channelProp property)
