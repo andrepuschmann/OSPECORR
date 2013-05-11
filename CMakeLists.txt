@@ -19,7 +19,7 @@ find_package(ZeroMQ REQUIRED)
 ########################################################################
 # Set common library variable and add include directories
 ########################################################################
-SET(OSPECORR_LIBS "scl_messages" "scl_shared" "zmq" "yaml-cpp" "protobuf" )
+SET(OSPECORR_LIBS "scl_ospecorr_messages" "scl_shared" "zmq" "yaml-cpp" "protobuf" )
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/message-defs)
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/shared)
 
