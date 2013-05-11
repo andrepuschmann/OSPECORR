@@ -1,9 +1,9 @@
 [submodule "common"]
 	path = common
 	url = git://github.com/MOBICOM/common.git
-[submodule "OSPECORR/components/iris/modules"]
-	path = OSPECORR/components/iris/modules
+[submodule "components/iris/modules"]
+	path = components/iris/modules
 	url = git://github.com/andrepuschmann/iris_modules.git
-[submodule "OSPECORR/components/iris/core"]
-	path = OSPECORR/components/iris/core
+[submodule "components/iris/core"]
+	path = components/iris/core
 	url = git://github.com/andrepuschmann/iris_core.git
