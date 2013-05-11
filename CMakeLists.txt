@@ -5,36 +5,52 @@ IF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     MESSAGE(FATAL_ERROR "Prevented in-tree built. This is bad practice.")
 ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 
-
 ########################################################################
 # Project setup
 #######################################################################
-CMAKE_MINIMUM_REQUIRED (VERSION 2.6)
-PROJECT (MOBICOM)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+PROJECT(OSPECORR)
 
-
-SET(MOBICOM_PATH $ENV{MOBICOM_PATH})
-IF (NOT MOBICOM_PATH)
-    MESSAGE(FATAL_ERROR "MOBICOM_PATH directory not specified!")
-    MESSAGE(FATAL_ERROR "Use 'export MOBICOM_PATH=/path/to/' to specify one.")
-ENDIF (NOT MOBICOM_PATH)
-
-LIST(APPEND CMAKE_MODULE_PATH ${MOBICOM_PATH}/common/scripts/cmake)
+LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts/cmake)
 find_package(Protobuf REQUIRED)
 find_package(YAML-CPP REQUIRED)
 find_package(ZeroMQ REQUIRED)
 
+########################################################################
+# Set common library variable and add include directories
+########################################################################
+SET(OSPECORR_LIBS "scl_messages" "scl_shared" "zmq" "yaml-cpp" "protobuf" )
+INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/message-defs)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/shared)
 
-SET(MOBICOM_PROJECT_NAME $ENV{MOBICOM_PROJECT_NAME})
-IF (NOT MOBICOM_PROJECT_NAME)
-    MESSAGE(FATAL_ERROR "MOBICOM_PROJECT_NAME directory not specified!")
-    MESSAGE(FATAL_ERROR "Use 'export MOBICOM_PROJECT_NAME=/path/to/' to specify one.")
-ENDIF (NOT MOBICOM_PROJECT_NAME)
-SET(PROJECT_NAME $ENV{PROJECT_NAME})
+########################################################################
+# Install Dirs
+########################################################################
+SET(RUNTIME_DIR bin)
+SET(LIBRARY_DIR lib)
+SET(INCLUDE_DIR include)
+SET(DATA_DIR share/${CPACK_PACKAGE_NAME})
+SET(DOC_DIR "share/doc/${CPACK_PACKAGE_NAME}")
 
-INCLUDE_DIRECTORIES($ENV{MOBICOM_PROJECT_PATH}/common/message-defs)
+########################################################################
+# Create uninstall targets
+########################################################################
+CONFIGURE_FILE(
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    IMMEDIATE @ONLY)
 
-INCLUDE_DIRECTORIES(common/scl/src)
+ADD_CUSTOM_TARGET(uninstall
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
-ADD_SUBDIRECTORY (common)
-ADD_SUBDIRECTORY (${MOBICOM_PROJECT_NAME})
+########################################################################
+# Add the subdirectories
+########################################################################
+ADD_SUBDIRECTORY(message-defs)
+ADD_SUBDIRECTORY(scl)
+ADD_SUBDIRECTORY(components)
+
+########################################################################
+# Print summary
+########################################################################
+MESSAGE(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
