@@ -28,7 +28,7 @@ $ export SCL_CACHE_GENERATOR=$OSPECORR_PATH/scl/tools/gen_cache.sh
 $ export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml
 ```
 
-To store the configuration permanently, put them into your .bashrc (and reinstalize your environment)
+4. To store the configuration permanently, put them into your .bashrc (and reinstalize your environment)
 
     ```bash
 $ echo "export OSPECORR_PATH=$PWD" >> $HOME/.bashrc
@@ -88,12 +88,11 @@ $ /usr/local/bin/examplePhySubscriber
     coming from the first application. Please note that we have to start pySysMoCo from the source directory as it has
     some file dependencies such as the UI file. You should be able to see regular RSSI updates in the PHY tab of pySysMoCo.
     ```bash
-$ cd ../OSPECORR/components/pySysMoCo
-$ python pySysMoCo.py
+$ python /usr/local/bin/pySysMoCo.py
 ```
 
 
-### Directory structure
+### Directory structure (UPDATE NEEDED)
 
 This repository contains the public bits of the platform. Some of the core components such as the SDR framework (i.e. Iris) are not yet included for license reasons but will be added in the future.
 
