@@ -40,7 +40,7 @@ CONFIGURE_FILE(
     "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
     IMMEDIATE @ONLY)
 
-ADD_CUSTOM_TARGET(uninstall
+ADD_CUSTOM_TARGET(uninstall_ospecorr
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
 ########################################################################
