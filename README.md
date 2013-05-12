@@ -20,7 +20,7 @@ $ sudo apt-get install build-essential libboost-all-dev git libfftw3-dev autocon
 $ git clone https://github.com/andrepuschmann/OSPECORR.git OSPECORR
 ```
 3. Change into the new directory and setup the build environment
-   
+
     ```bash
 $ cd ./OSPECORR
 $ export OSPECORR_PATH=$PWD
@@ -36,7 +36,8 @@ $ echo 'export SCL_CACHE_GENERATOR=$OSPECORR_PATH/scl/tools/gen_cache.sh' >> $HO
 $ echo 'export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml' >> $HOME/.bashrc
 $ bash
 ```
-    
+
+
 4. Initialize all sub repositories
 
     ```bash
