@@ -1,35 +1,10 @@
-# OSPECOR²
+# OSPECORR
 
-This is OSPECOR². OSPECOR² stands for Open Software Platform for Experimental Cognitive Radio Research.
+This is OSPECORR. OSPECORR stands for Open Software Platform for Experimental Cognitive Radio Research.
 
 ### Overview
 
-This repository contains the public bits of the platform. Some of the core components such as the SDR framework (i.e. Iris) are not yet included for license reasons but will be added in the future.
-
-The repository consists of the core of OSPECORR and one subrepository called common which houses commonly used components such as the Signaling and Communication Link (SCL) which is used by multiple projects within the Graduate School on Mobile Communication (MOBICOM) at Ilmenau University of Technology, Ilmenau, Germany.
-
-The general folder structure is shown below:
-
-* __MOBICOM__ (MOBICOM_PATH defines top-level path)
-    * __common__ MOBICOM common, aka __"level 1 common"__
-        * __scl__: signaling and communication link
-        * __svctrl__: service control utility
-        * __scripts__: bashrc (sourced from user bashrc)
-    * __OSPECORR__ (MOBICOM_PROJECT_NAME = __OSPECORR__):
-        * __common__ __OSPECORR__ common, aka __"level 2 common"__
-            * __config__: common configuration files for all subprojects
-            * __scripts__: bashrc (sourced from upper-level bashrc)
-        * __components__: programs connected through __common__ above
-
-The key motivation behind this structure is to support code-reuse while keeping conceptually different parts of the software system in different repositories (plug-in concept).
-Thus, our system has the following benefits:
-
-* a standard structure, comparable with the Linux filesystem having fixed file locations at 3 hierarchy levels (1-3) in the filesystem. Repeating directories are for example: config, messages, scripts.
-* code reuse between distinct projects like ARCADE and OSPECOR (__"level 1"__ common) keeps systems maintainable through submodules
-* support for automatic export of environment variables through multiple bashrc files
-* defining different software architectures (__"level 2"__ common) for multiple deployment targets (UAV, PC, ...)
-* sharing code and message formats between multiple processes (components) on a single machine (__"level 3"__ common)
-
+Some text here ..
 
 ### Getting started:
 
@@ -39,24 +14,33 @@ Thus, our system has the following benefits:
 $ sudo apt-get install build-essential libboost-all-dev git libfftw3-dev autoconf cmake libprotobuf-dev python-protobuf python-qt4-gl python-yaml protobuf-compiler protobuf-c-compiler python-qt4 python-qt4-dev pyqt4-dev-tools python-matplotlib python-setuptools python-qwt5-qt4 libzmq-dev libpgm-dev python-zmq libqwt-dev
 ```   
 
-2. Clone the repo to your machine, make sure to call it MOBICOM (the actual project name will be a directory inside the repo)
+2. Clone the repo to your machine:
 
     ```bash
-$ git clone git://github.com/andrepuschmann/OSPECORR.git MOBICOM
+$ git clone https://github.com/andrepuschmann/OSPECORR.git OSPECORR
 ```
-3. Change into the new directory and initialize the submodules (i.e. the common part of MOBICOM)
+3. Change into the new directory and setup the build environment
    
     ```bash
-$ cd ./MOBICOM
-$ ./gitsub_update.sh
+$ cd ./OSPECORR
+$ export OSPECORR_PATH=$PWD
+$ export SCL_CACHE_GENERATOR=$OSPECORR_PATH/scl/tools/gen_cache.sh
+$ export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml
 ```
-    
-4. Copy the content of ```example.bashrc``` into your local bashrc and edit it if required, reinstalize your environment
+
+To store the configuration permanently, put them into your .bashrc (and reinstalize your environment)
 
     ```bash
-$ cat example.bashrc >> ~/.bashrc
-$ nano ~/.bashrc
+$ echo "export OSPECORR_PATH=$PWD" >> $HOME/.bashrc
+$ echo 'export SCL_CACHE_GENERATOR=$OSPECORR_PATH/scl/tools/gen_cache.sh' >> $HOME/.bashrc
+$ echo 'export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml' >> $HOME/.bashrc
 $ bash
+```
+    
+4. Initialize all sub repositories
+
+    ```bash
+$ ./gitsub_update.sh
 ```
 
 5. Now, create a new build directory and build the source
@@ -89,12 +73,12 @@ RSSI measurements over SCL.
 
     6.1. Start the example PHY publisher (which is a Python app and therefore requires a Python interpreter)
     ```bash
-$ python OSPECORR/components/examplePhyPublisher/examplePhyPublisher.py
+$ python /usr/local/bin/examplePhyPublisher.py
 ```
 
     6.2. Start the example PHY subscriber in another console (which is a standard C++ application and be started without parameter)
     ```bash
-$ OSPECORR/components/examplePhySubscriber/examplePhySubscriber
+$ /usr/local/bin/examplePhySubscriber
 ```
     You should now be able to see the incoming measurements from the publishing application
     
@@ -106,3 +90,32 @@ $ OSPECORR/components/examplePhySubscriber/examplePhySubscriber
 $ cd ../OSPECORR/components/pySysMoCo
 $ python pySysMoCo.py
 ```
+
+
+### Directory structure
+
+This repository contains the public bits of the platform. Some of the core components such as the SDR framework (i.e. Iris) are not yet included for license reasons but will be added in the future.
+
+The repository consists of the core of OSPECORR and one subrepository called common which houses commonly used components such as the Signaling and Communication Link (SCL) which is used by multiple projects within the Graduate School on Mobile Communication (MOBICOM) at Ilmenau University of Technology, Ilmenau, Germany.
+
+The general folder structure is shown below:
+
+* __MOBICOM__ (MOBICOM_PATH defines top-level path)
+    * __common__ MOBICOM common, aka __"level 1 common"__
+        * __scl__: signaling and communication link
+        * __svctrl__: service control utility
+        * __scripts__: bashrc (sourced from user bashrc)
+    * __OSPECORR__ (MOBICOM_PROJECT_NAME = __OSPECORR__):
+        * __common__ __OSPECORR__ common, aka __"level 2 common"__
+            * __config__: common configuration files for all subprojects
+            * __scripts__: bashrc (sourced from upper-level bashrc)
+        * __components__: programs connected through __common__ above
+
+The key motivation behind this structure is to support code-reuse while keeping conceptually different parts of the software system in different repositories (plug-in concept).
+Thus, our system has the following benefits:
+
+* a standard structure, comparable with the Linux filesystem having fixed file locations at 3 hierarchy levels (1-3) in the filesystem. Repeating directories are for example: config, messages, scripts.
+* code reuse between distinct projects like ARCADE and OSPECOR (__"level 1"__ common) keeps systems maintainable through submodules
+* support for automatic export of environment variables through multiple bashrc files
+* defining different software architectures (__"level 2"__ common) for multiple deployment targets (UAV, PC, ...)
+* sharing code and message formats between multiple processes (components) on a single machine (__"level 3"__ common)
