@@ -12,9 +12,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(OSPECORR)
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/scripts/cmake)
-find_package(Protobuf REQUIRED)
-find_package(YAML-CPP REQUIRED)
-find_package(ZeroMQ REQUIRED)
+FIND_PACKAGE(Protobuf REQUIRED)
+FIND_PACKAGE(YAML-CPP REQUIRED)
+FIND_PACKAGE(ZeroMQ REQUIRED)
 
 ########################################################################
 # Set common library variable and add include directories
@@ -22,6 +22,7 @@ find_package(ZeroMQ REQUIRED)
 SET(OSPECORR_LIBS "scl_ospecorr_messages" "scl_shared" "zmq" "yaml-cpp" "protobuf" )
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/message-defs)
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/src)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/thirdparty/yaml-cpp-0.2.7/include)
 
 ########################################################################
 # Install Dirs
