@@ -21,7 +21,7 @@ find_package(ZeroMQ REQUIRED)
 ########################################################################
 SET(OSPECORR_LIBS "scl_ospecorr_messages" "scl_shared" "zmq" "yaml-cpp" "protobuf" )
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/message-defs)
-INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/shared)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/src)
 
 ########################################################################
 # Install Dirs
