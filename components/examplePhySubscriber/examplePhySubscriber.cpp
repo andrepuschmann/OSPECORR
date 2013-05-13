@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "sclhelper.hpp"
 #include "phy.pb.h"
 
@@ -9,7 +10,7 @@ int main()
 {
     GateFactory &myFactory = GateFactory::getInstance();
     sclGate *gate = myFactory.createGate("ExampleModule", "phyevent");
-    
+
     // give SCL some time to startup
     sleep(1);
 
@@ -21,6 +22,6 @@ int main()
         cout << "RSSI: " << stats.rssi() << endl;
         cout << "Is channel free? " << ((stats.state() == IDLE) ? true : false) << endl;
     }
-    
+
     return 0;
 }
