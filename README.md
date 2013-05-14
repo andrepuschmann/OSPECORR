@@ -1,10 +1,35 @@
 # OSPECORR
 
-This is OSPECORR. OSPECORR stands for Open Software Platform for Experimental Cognitive Radio Research.
+OSPECORR is a free and __Open Software Platform for Experimental Cognitive Radio Research__ which is being developed by members
+of the Graduate School on Mobile Communication (MOBICOM) at Ilmenau University of Technology, Germany.
+The main idea behind OSPECORR is to provide an easy to use platform that facilitates research and experimentation in the
+field of Cognitive Radio (CR).
 
-### Overview
+Cognitive Radios are often built on top of a so called __Software Defined Radio (SDR)__ that enables the flexible reconfiguration
+and adaption of the radio during runtime. Moreover, a typical CR design comprises other components including a 
+__Cognitive Resource Manager (CRM)__
+or an __Radio Environment Database (REM)__ that allows to store certain information gathered through spectrum sensing. Naturally, t
+he components of the radio are required to exchange information among each other and this is where OSPECORR comes into play.
 
-Some text here ..
+Rather than implementing the entire radio inside a single application, OSPECORR allows to split the functionality among
+different components that communicate with each other over a middleware called SCL. 
+
+
+### Project structure:
+
+The general project structure is shown below:
+
+* __components__
+    * __examplePhySubscriber__: An example SCL subscriber application written in C++
+    * __examplePhyPublisher__: An example SCL publisher application written in Python
+    * __gnuradio__: GNU-Radio scripts
+    * __iris__: A reconfigurable component-based software radio framework
+    * __pySysMoCo__: A Python+QT GUI application for system monitoring and control
+* __config__: Contains the SCL system configuration
+* __message-defs__: Message definitions used for SCL messages
+* __scripts__: Mainly includes cmake scripts for building OSPECORR
+* __scl__: The Signaling and Communication Link as an git submodule
+
 
 ### Getting started:
 
@@ -90,32 +115,3 @@ $ /usr/local/bin/examplePhySubscriber
     ```bash
 $ python /usr/local/bin/pySysMoCo.py
 ```
-
-
-### Directory structure (UPDATE NEEDED)
-
-This repository contains the public bits of the platform. Some of the core components such as the SDR framework (i.e. Iris) are not yet included for license reasons but will be added in the future.
-
-The repository consists of the core of OSPECORR and one subrepository called common which houses commonly used components such as the Signaling and Communication Link (SCL) which is used by multiple projects within the Graduate School on Mobile Communication (MOBICOM) at Ilmenau University of Technology, Ilmenau, Germany.
-
-The general folder structure is shown below:
-
-* __MOBICOM__ (MOBICOM_PATH defines top-level path)
-    * __common__ MOBICOM common, aka __"level 1 common"__
-        * __scl__: signaling and communication link
-        * __svctrl__: service control utility
-        * __scripts__: bashrc (sourced from user bashrc)
-    * __OSPECORR__ (MOBICOM_PROJECT_NAME = __OSPECORR__):
-        * __common__ __OSPECORR__ common, aka __"level 2 common"__
-            * __config__: common configuration files for all subprojects
-            * __scripts__: bashrc (sourced from upper-level bashrc)
-        * __components__: programs connected through __common__ above
-
-The key motivation behind this structure is to support code-reuse while keeping conceptually different parts of the software system in different repositories (plug-in concept).
-Thus, our system has the following benefits:
-
-* a standard structure, comparable with the Linux filesystem having fixed file locations at 3 hierarchy levels (1-3) in the filesystem. Repeating directories are for example: config, messages, scripts.
-* code reuse between distinct projects like ARCADE and OSPECOR (__"level 1"__ common) keeps systems maintainable through submodules
-* support for automatic export of environment variables through multiple bashrc files
-* defining different software architectures (__"level 2"__ common) for multiple deployment targets (UAV, PC, ...)
-* sharing code and message formats between multiple processes (components) on a single machine (__"level 3"__ common)
