@@ -27,11 +27,11 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/scl/thirdparty/yaml-cpp-0.2.7/include)
 ########################################################################
 # Install Dirs
 ########################################################################
-SET(RUNTIME_DIR bin)
+SET(RUNTIME_DIR bin/${PROJECT_NAME})
 SET(LIBRARY_DIR lib)
 SET(INCLUDE_DIR include)
-SET(DATA_DIR share/${CPACK_PACKAGE_NAME})
-SET(DOC_DIR "share/doc/${CPACK_PACKAGE_NAME}")
+SET(DATA_DIR share/${PROJECT_NAME})
+SET(DOC_DIR "share/doc/${PROJECT_NAME}")
 
 ########################################################################
 # Create uninstall targets
