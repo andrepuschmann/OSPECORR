@@ -1,9 +1,3 @@
-[submodule "components/iris/core"]
-	path = components/iris/core
-	url = https://github.com/andrepuschmann/iris_core.git
-[submodule "components/iris/modules"]
-	path = components/iris/modules
-	url = https://github.com/andrepuschmann/iris_modules.git
 [submodule "scl"]
 	path = scl
 	url = https://github.com/MOBICOM/scl.git

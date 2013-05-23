@@ -5,11 +5,11 @@ ADD_SUBDIRECTORY (examplePhySubscriber)
 
 # check which version of Iris
 IF(NOT IRIS_TUI)
-  ADD_SUBDIRECTORY (iris)
+  #ADD_SUBDIRECTORY (iris)
   MESSAGE(STATUS "Building public version of Iris.")
 ELSE(NOT IRIS_TUI)
   IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/iris_tui/")
-    ADD_SUBDIRECTORY (iris_tui)
+    #ADD_SUBDIRECTORY (iris_tui)
     MESSAGE(STATUS "Building TUI version of Iris.")
   ENDIF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/iris_tui/")
 ENDIF(NOT IRIS_TUI)
