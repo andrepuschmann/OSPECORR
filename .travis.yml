@@ -8,8 +8,10 @@ script:
  - cd build
  - cmake ..
  - make
+ - sudo make install
 
 # watch master and next branches only
 branches:
  only:
-   - projectrestruct
+   - master
+   - next
