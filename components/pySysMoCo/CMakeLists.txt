@@ -11,4 +11,6 @@ FIND_PACKAGE( Qt4 )
 # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
 INCLUDE( ${QT_USE_FILE} )
 
+# Install to local build path and to system wide binary path
 INSTALL(FILES ${PYSYSMOCO_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+INSTALL(FILES ${PYSYSMOCO_FILES} DESTINATION ${RUNTIME_DIR})
