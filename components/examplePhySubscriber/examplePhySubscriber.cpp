@@ -20,7 +20,7 @@ int main()
         PhyMessage stats;
         gate->recvProto(stats);
         cout << "RSSI: " << stats.rssi() << endl;
-        cout << "Is channel free? " << ((stats.state() == IDLE) ? true : false) << endl;
+        cout << "Is channel free? " << ((stats.state() == FREE) ? true : false) << endl;
     }
 
     return 0;

@@ -1,12 +1,12 @@
 package scl_phy;
 
 enum ChannelState {
-  UNKNOWN = 0;
-  IDLE = 1;
-  BUSY = 2;
-  PU_BUSY = 2;
+  FREE = 0;
+  BUSY_SU = 1;
+  BUSY_CU = 2;
+  BUSY_PU = 2;
+  UNKNOWN = 4;
 }
-
 
 // this is the most elementary view of what a "channel" actually is, i.e. only frequency domain
 message BasicChannel {
@@ -14,15 +14,16 @@ message BasicChannel {
   required uint32 bandwidth = 2;
 }
 
-
 message PhyMessage {
-  optional float rssi = 1;                              // current received signal strength indicator [dB]
-  optional float last_rx_rssi = 2;                      // RSSI at last packets received packet
-  optional float threshold = 3;                         // CCA threshold [dB]
-  optional ChannelState state = 4 [default = UNKNOWN];  // Channel state according to CCA
-  optional float evm = 5;                               // error vector magnitude [dB]
-  optional float cfo = 6;                               // carrier frequency offset (f/Fs)
-  optional float fer = 7;                               // frame error rate
-  repeated float fft_bin = 8;                           // FFT bins
-  optional string status_message = 9;                   // A status message which may be logged or just displayed
+  optional BasicChannel channel = 1;                    // The channel, if known
+  optional bool is_active = 2;                          // Whether a TRx is currently tuned to that channel
+  optional float rssi = 3;                              // current received signal strength indicator [dB]
+  optional float last_rx_rssi = 4;                      // RSSI at last packets received packet
+  optional float threshold = 5;                         // CCA threshold [dB]
+  optional ChannelState state = 6 [default = UNKNOWN];  // Channel state according to CCA
+  optional float evm = 7;                               // error vector magnitude [dB]
+  optional float cfo = 8;                               // carrier frequency offset (f/Fs)
+  optional float fer = 9;                               // frame error rate
+  repeated float fft_bin = 10;                          // FFT bins
+  optional string status_message = 11;                  // A status message which may be logged or just displayed
 }

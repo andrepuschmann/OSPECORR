@@ -33,7 +33,6 @@ import time
 
 # import own classes
 from listener import ListenerTask
-from drmhelper import *
 import scl
 import application_pb2
 import linklayer_pb2
@@ -47,8 +46,6 @@ class mainDialog(QtGui.QDialog):
     #listenerLinkStats = ListenerTask(None,'pySysMoCo', 'linkStatistics')
     listenerPhyEvent = ListenerTask(None,'pySysMoCo', 'phyevent')
     listenerLinkLayerEvent = ListenerTask(None,'pySysMoCo', 'linklayerevent')
-    listenerDrmEvent = ListenerTask(None,'pySysMoCo', 'drmevent')
-    listenerDrmClientData = ListenerTask(None,'pySysMoCo', 'drmclientdata')
     radioConfig = radioconfig_pb2.RadioConfig()
     displaychannellist = {}
 
@@ -58,9 +55,9 @@ class mainDialog(QtGui.QDialog):
         # Set up the user interface from Designer.
         self.ui = uic.loadUi("gui.ui")
         self.ui.show()
-        
+
         # setup GUI slots and signals
-        self.ui.plot = FftPlot()       
+        self.ui.plot = FftPlot()
         self.ui.plot.resize(620, 440)
         self.ui.plot.setParent(self.ui.qwtWidget)
         self.ui.dpi = 100
@@ -81,24 +78,19 @@ class mainDialog(QtGui.QDialog):
 
         # neighbortable has 4 columns (address, tx packets, rx packets, rx lost packets)
         self.ui.neighborTable.setColumnCount(4)
-        self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets", "Lost packets"]) 
+        self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets", "Lost packets"])
         self.lastChannel = 0 # to reset last channel
         self.paused = False
-        
+
         # connect listener
         #self.listenerQosReq.recvSignal.connect(self.updateQosReq)
         #self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
         self.listenerPhyEvent.recvSignal.connect(self.updatePhy)
         self.listenerLinkLayerEvent.recvSignal.connect(self.updateLinkLayer)
-        self.listenerDrmEvent.recvSignal.connect(self.updateDrmEvent)
-        self.listenerDrmClientData.recvSignal.connect(self.updateDrmClientData)
-        
+
         # start listener threads
         self.listenerPhyEvent.start()
         self.listenerLinkLayerEvent.start()
-        self.listenerDrmEvent.start()
-        self.listenerDrmClientData.start()
-        
 
     def pauseButtonClicked(self):
         self.paused = not self.paused
@@ -122,64 +114,11 @@ class mainDialog(QtGui.QDialog):
         self.ui.currentChannel.setText('none')
         self.ui.messageLog.clear()
 
-    # update
-    def updateDrmClientData(self):
-        update = drm_pb2.statusUpdate()
-        update.ParseFromString(self.listenerDrmClientData.string) # fill protobuf, string is stored in listener object
-        
-        # update gui if channel_id is in displaychannelmap
-        print "updateDrmClientData"
-        if update.channel_id in self.displaychannellist:
-            print "key found"
-            print update.channel_id
-            print self.displaychannellist[update.channel_id]
-            # update channel activity
-            objectName = "self.ui.statusChannel" + str(self.displaychannellist[update.channel_id] + 1) # channel map starts with zero
-            print objectName
-            objectHandle = eval(objectName)
-            if update.status == update.FREE:
-                objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
-            elif update.status == update.BUSY_SU:
-                objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
-            elif update.status == update.BUSY_PU:
-                objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
-        
-            # this is a bad hack to grey out the former channel
-            if (self.lastChannel != update.channel_id):
-                 objectName = "self.ui.statusChannel" + str(self.displaychannellist[self.lastChanne] + 1) # channel map starts with zero
-                 objectHandle = eval(objectName)
-                 objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
-            self.lastChannel = update.channel_id
-
-        
-    def updateDrmEvent(self):
-        update = drm_pb2.control()
-        update.ParseFromString(self.listenerDrmEvent.string) # fill protobuf, string is stored in listener object
-        
-        # iterate over channel list and map the first 5 channels to be displayed
-        num_channels = 0
-        for i in update.channelMap:
-            self.displaychannellist[i.channel_id] = num_channels
-            num_channels = num_channels + 1
-            if num_channels == 5:
-                print "Maximum number of channels to display reached, abort."
-                break
-            
-        # update gui according to displaychannellist
-        for i in self.displaychannellist:
-            print self.displaychannellist[i]
-            # update center frequency label
-            objectName = "self.ui.freqChannel" + str(i) 
-            #print objectName
-            objectHandle = eval(objectName)
-            objectHandle.setText(str(update.channelMap[i - 1].f_center/1000000) + ' MHz') # channel map starts with zero
-    
-    
     def updateMessageLog(self):
         # update message log
         if update.statusMessage:
             self.ui.messageLog.append(update.statusMessage)
-        
+
         # label for current channel
         self.ui.currentChannel.setText(str(update.channel + 1) + ' (' + update.description + ')')
 
@@ -187,17 +126,17 @@ class mainDialog(QtGui.QDialog):
     def updateQosReq(self):
         requirements = application_pb2.qosRequirements()
         requirements.ParseFromString(self.listenerQosReq.string)
-        
+
         # set gui
         self.ui.dataRateValue.setText(str(requirements.dataRate) + ' kB/s')
         self.ui.delayValue.setText(str(requirements.delay) + ' ms')
         self.ui.losslessValue.setChecked(requirements.featureLossless)
-        
-        
+
+
     def updateLinkStats(self):
         stats = application_pb2.linkStatistics()
         stats.ParseFromString(self.listenerLinkStats.string)
-        
+
         # set gui
         self.ui.upwardThroughputValue.setText(str(format(stats.upwardThroughput, '.2f')) + ' kB/s')
         self.ui.upwardPacketSizeValue.setText(str(stats.upwardPacketSize) + ' byte')
@@ -206,20 +145,62 @@ class mainDialog(QtGui.QDialog):
 
 
     def stateToString(self, state):
-        if state == phy_pb2.UNKNOWN:
-            return "unknown"
-        elif state == phy_pb2.IDLE:
-            return "idle"
-        elif state == phy_pb2.BUSY:
+        if state == phy_pb2.FREE:
+            return "free"
+        elif state == phy_pb2.BUSY_SU:
             return "busy"
-        elif state == phy_pb2.PU_BUSY:
+        elif state == phy_pb2.BUSY_CU:
+            return "busy classical user"
+        elif state == phy_pb2.BUSY_PU:
             return "PU active"
+        elif state == phy_pb2.UNKNOWN:
+            return "unknown"
 
+
+    def setChannelState(self, message):
+        # update channel state
+        if (message.channel.f_center not in self.displaychannellist) and (len(self.displaychannellist) <= 5):
+            print "Add new channel to display list."
+            self.displaychannellist[message.channel.f_center] = len(self.displaychannellist)
+        else:
+            if len(self.displaychannellist) > 5:
+                print "Maximum number of channels to display reached, abort."
+                return
+
+        if message.channel.f_center in self.displaychannellist:
+            # update channel
+            objectName = "self.ui.freqChannel" + str(self.displaychannellist[message.channel.f_center])
+            #print objectName
+            objectHandle = eval(objectName)
+            objectHandle.setText(str(message.channel.f_center/1000000) + ' MHz') # channel map starts with zero
+
+            # update channel activity
+            objectName = "self.ui.statusChannel" + str(self.displaychannellist[message.channel.f_center])
+            #print objectName
+            objectHandle = eval(objectName)
+            if message.state == phy_pb2.FREE:
+                objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
+            elif message.state == phy_pb2.BUSY_SU:
+                objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
+            elif message.state == phy_pb2.BUSY_PU:
+                objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
+            elif message.state == phy_pb2.UNKNOWN:
+                objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
+
+            # update operating channel, if applicable
+            if message.is_active == True:
+                self.ui.currentChannel.setText('Ch ' + str(self.displaychannellist[message.channel.f_center] + 1))
+
+            return
 
     def updatePhy(self):
         stats = phy_pb2.PhyMessage()
         stats.ParseFromString(self.listenerPhyEvent.string)
-        
+
+        if stats.HasField('channel'):
+            print "Stats contains channel specific information."
+            self.setChannelState(stats)
+
         # set gui
         self.ui.rssiValue.setText(str(format(stats.rssi, '.2f')) + ' dB')
         self.ui.lastRssiValue.setText(str(format(stats.last_rx_rssi, '.2f')) + ' dB')
@@ -237,7 +218,7 @@ class mainDialog(QtGui.QDialog):
                 self.ui.plot.plotFft(fft)
                 # matplotlib display
                 #self.axes.set_axis_bgcolor('black')
-                #self.axes.clear()        
+                #self.axes.clear()
                 #self.axes.grid(True)
                 #self.axes.plot(range(len(fft)), fft, '-', label='what')
                 #self.axes.set_ylabel('Power in dBm')
@@ -353,33 +334,33 @@ class mainDialog(QtGui.QDialog):
             self.ui.neighborTable.setItem(numRows, 0, QtGui.QTableWidgetItem(address))
             row = numRows
         return row
-    
+
     def updateLinkLayer(self):
         stats = linklayer_pb2.LinkLayerMessage()
         stats.ParseFromString(self.listenerLinkLayerEvent.string)
-        
+
         # set gui
         self.ui.rttValue.setText(str(format(stats.mac.avg_rtt, '.2f')) + ' ms')
         self.ui.txQueueValue.setText(str(stats.mac.tx_queue_size) + '/' + str(stats.mac.tx_queue_capacity))
         self.ui.retransValue.setText(str(stats.mac.tx_retries_per_packet))
         self.ui.cwValue.setText(str(stats.mac.min_cw) + '/' + str(stats.mac.current_cw) + '/' + str(stats.mac.max_cw))
         self.ui.txRateValue.setText(str(stats.mac.tx_rate))
-        
+
         # update txstats (column 1)
         for nodeStats in stats.mac.tx_stats:
             row = self.getNeighbortableRow(nodeStats.address)
             self.ui.neighborTable.setItem(row, 1, QtGui.QTableWidgetItem(str(nodeStats.packets)))
-        
+
         # update rxstats (column 2)
         for nodeStats in stats.mac.rx_stats:
             row = self.getNeighbortableRow(nodeStats.address)
             self.ui.neighborTable.setItem(row, 2, QtGui.QTableWidgetItem(str(nodeStats.packets)))
-            
+
         # update rxstatslost (column 3)
         for nodeStats in stats.mac.rx_stats_lost:
             row = self.getNeighbortableRow(nodeStats.address)
             self.ui.neighborTable.setItem(row, 3, QtGui.QTableWidgetItem(str(nodeStats.packets)))
-            
+
     def quitWindow(self):
         # ask listener thread to stop
         #self.listenerFastSensing.stop()
@@ -430,10 +411,10 @@ class DataPlot(Qwt.QwtPlot):
 
         self.setAxisTitle(Qwt.QwtPlot.xBottom, "Time (seconds)")
         self.setAxisTitle(Qwt.QwtPlot.yLeft, "Values")
-    
+
         self.startTimer(50)
         self.phase = 0.0
-        
+
     def alignScales(self):
         self.canvas().setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Plain)
         self.canvas().setLineWidth(1)
@@ -458,8 +439,8 @@ class FftPlot(Qwt.QwtPlot):
         self.spectrumCurve.setPen(Qt.QPen(Qt.Qt.blue))
         self.spectrumCurve.setYAxis(Qwt.QwtPlot.yLeft)
         self.setAxisScale( Qwt.QwtPlot.xBottom, 0.0, 512.0)
-        self.setAxisScale( Qwt.QwtPlot.yLeft, -140.0, -60.0)        
-    
+        self.setAxisScale( Qwt.QwtPlot.yLeft, -140.0, -60.0)
+
     def plotFft(self, values):
         self.spectrumCurve.setData(range(len(values)), values)
         self.replot()

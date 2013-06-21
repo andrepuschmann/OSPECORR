@@ -33,9 +33,9 @@ while True:
     result.rssi = random.uniform(50, 80)
     result.threshold = threshold
     if result.rssi > threshold:
-        result.state = phy_pb2.IDLE
+        result.state = phy_pb2.FREE
     else:
-        result.state = phy_pb2.BUSY
+        result.state = phy_pb2.BUSY_SU
     print result.rssi
     string = result.SerializeToString()
     sock.send(string)

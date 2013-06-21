@@ -153,6 +153,43 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QLabel" name="freqChannel0">
+                  <property name="text">
+                   <string>none</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QWidget" name="statusChannel0" native="true">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>70</height>
+                   </size>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(140, 140, 140);</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1">
+                <item>
+                 <widget class="QLabel" name="label2">
+                  <property name="text">
+                   <string>Ch2</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="freqChannel1">
                   <property name="text">
                    <string>none</string>
@@ -178,11 +215,11 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
                 <item>
-                 <widget class="QLabel" name="label2">
+                 <widget class="QLabel" name="label3">
                   <property name="text">
-                   <string>Ch2</string>
+                   <string>Ch3</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -215,11 +252,11 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,1">
                 <item>
-                 <widget class="QLabel" name="label3">
+                 <widget class="QLabel" name="label4">
                   <property name="text">
-                   <string>Ch3</string>
+                   <string>Ch4</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -252,11 +289,11 @@
                </layout>
               </item>
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,0,1">
+               <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0,1">
                 <item>
-                 <widget class="QLabel" name="label4">
+                 <widget class="QLabel" name="label5">
                   <property name="text">
-                   <string>Ch4</string>
+                   <string>Ch5</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
@@ -275,43 +312,6 @@
                 </item>
                 <item>
                  <widget class="QWidget" name="statusChannel4" native="true">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>70</height>
-                   </size>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-color: rgb(140, 140, 140);</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0,1">
-                <item>
-                 <widget class="QLabel" name="label5">
-                  <property name="text">
-                   <string>Ch5</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="freqChannel5">
-                  <property name="text">
-                   <string>none</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QWidget" name="statusChannel5" native="true">
                   <property name="minimumSize">
                    <size>
                     <width>0</width>

@@ -10,6 +10,7 @@ ENDIF(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 #######################################################################
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 PROJECT(OSPECORR)
+ENABLE_TESTING()
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 # SCL depends on YAML-CPP and ZeroMQ already
