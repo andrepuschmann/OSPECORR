@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>673</width>
+    <width>740</width>
     <height>667</height>
    </rect>
   </property>
@@ -64,7 +64,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>7</number>
      </property>
      <widget class="QWidget" name="tab_overview">
       <attribute name="title">
@@ -1847,6 +1847,277 @@
        <property name="text">
         <string>Apply Changes</string>
        </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>PU control</string>
+      </attribute>
+      <widget class="QGroupBox" name="channelBox">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>80</y>
+         <width>121</width>
+         <height>121</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Channel</string>
+       </property>
+       <widget class="QRadioButton" name="radioButton_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>104</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Ch1</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButton_4">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>104</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Ch2</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButton_5">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>104</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Ch2</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QRadioButton" name="manualButton">
+       <property name="geometry">
+        <rect>
+         <x>40</x>
+         <y>10</y>
+         <width>104</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Manual</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QRadioButton" name="automaticButton">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>10</y>
+         <width>104</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Automatic</string>
+       </property>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_11">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>80</y>
+         <width>141</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Propability</string>
+       </property>
+       <widget class="QLineEdit" name="propCh1">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>30</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>0.6</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="propCh2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>0.2</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="propCh3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>0.2</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_12">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>80</y>
+         <width>261</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Poisson parameter</string>
+       </property>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>80</y>
+          <width>101</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>inter-arrival time</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="dutyCycle">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>30</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>6</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>111</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Duty cylce (s)</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="interarrivalTime">
+        <property name="geometry">
+         <rect>
+          <x>130</x>
+          <y>80</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>2</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_10">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>340</y>
+         <width>311</width>
+         <height>131</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Radio components</string>
+       </property>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>91</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Engine</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="engineName">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>30</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>phyengine1</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>80</y>
+          <width>91</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Component</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="componentName">
+        <property name="geometry">
+         <rect>
+          <x>110</x>
+          <y>70</y>
+          <width>113</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>usrptx1</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </widget>

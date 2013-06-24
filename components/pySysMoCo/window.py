@@ -33,6 +33,7 @@ import time
 
 # import own classes
 from listener import ListenerTask
+from activitycontroller import ActivityController
 import scl
 import application_pb2
 import linklayer_pb2
@@ -75,6 +76,11 @@ class mainDialog(QtGui.QDialog):
         self.ui.applyChangesButton.clicked.connect(self.reconfigRadio)
         self.ui.componentList.currentItemChanged.connect(self.updateParamTable)
         self.ui.parameterTable.setHorizontalHeaderLabels(["Name", "Value"])
+        # PU control tab
+        self.ui. automaticButton.clicked.connect(self.automaticButtonClicked)
+        self.ui. manualButton.clicked.connect(self.manualButtonClicked)
+        
+        
 
         # neighbortable has 4 columns (address, tx packets, rx packets, rx lost packets)
         self.ui.neighborTable.setColumnCount(4)
@@ -91,6 +97,40 @@ class mainDialog(QtGui.QDialog):
         # start listener threads
         self.listenerPhyEvent.start()
         self.listenerLinkLayerEvent.start()
+        
+        # dummy
+        self.automaticButtonClicked()
+
+
+    def automaticButtonClicked(self):
+        print "AutomaticButton clicked"
+       
+        # prepare channel list
+        #channellist = self.displaychannellist
+        channellist = [2400000000L, 2404000000L, 2408000000L]
+        print channellist
+        
+        # prepare propabilities
+        props = []
+        props.append(float(self.ui.propCh1.text()))
+        props.append(float(self.ui.propCh2.text()))
+        props.append(float(self.ui.propCh3.text()))
+        print props
+        
+        # start thread
+        print "Start thread .."
+        dutycycle = float(self.ui.dutyCycle.text())
+        interarrivaltime = float(self.ui.interarrivalTime.text())
+        engineName = self.ui.engineName.text()
+        componentName = self.ui.componentName.text()
+        self.activityThread = ActivityController(channellist, props, dutycycle, interarrivaltime, engineName, componentName)
+        self.activityThread.start()
+        
+        
+    def manualButtonClicked(self):
+        print "manualButtonClicked"
+        self.activityThread.stop()
+
 
     def pauseButtonClicked(self):
         self.paused = not self.paused
@@ -368,6 +408,7 @@ class mainDialog(QtGui.QDialog):
         #self.listenerChStatusUpdate.stop()
         #self.listenerQosReq.stop()
         #self.listenerLinkStats.stop()
+        self.activityThread.stop()
         self.listenerPhyEvent.stop()
         self.listenerLinkLayerEvent.stop()
         self.close()
