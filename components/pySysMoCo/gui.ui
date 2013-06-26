@@ -1865,7 +1865,7 @@
        <property name="title">
         <string>Channel</string>
        </property>
-       <widget class="QRadioButton" name="radioButton_3">
+       <widget class="QRadioButton" name="ch1Button">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1878,7 +1878,7 @@
          <string>Ch1</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_4">
+       <widget class="QRadioButton" name="ch2Button">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1891,7 +1891,7 @@
          <string>Ch2</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="radioButton_5">
+       <widget class="QRadioButton" name="ch3Button">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -1927,7 +1927,7 @@
       <widget class="QRadioButton" name="automaticButton">
        <property name="geometry">
         <rect>
-         <x>170</x>
+         <x>150</x>
          <y>10</y>
          <width>104</width>
          <height>22</height>
@@ -1937,7 +1937,7 @@
         <string>Automatic</string>
        </property>
       </widget>
-      <widget class="QGroupBox" name="groupBox_11">
+      <widget class="QGroupBox" name="propBox">
        <property name="geometry">
         <rect>
          <x>160</x>
@@ -1959,7 +1959,10 @@
          </rect>
         </property>
         <property name="text">
-         <string>0.6</string>
+         <string>0.4</string>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QLineEdit" name="propCh2">
@@ -1972,7 +1975,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>0.2</string>
+         <string>0.3</string>
         </property>
        </widget>
        <widget class="QLineEdit" name="propCh3">
@@ -1985,11 +1988,11 @@
          </rect>
         </property>
         <property name="text">
-         <string>0.2</string>
+         <string>0.3</string>
         </property>
        </widget>
       </widget>
-      <widget class="QGroupBox" name="groupBox_12">
+      <widget class="QGroupBox" name="poissonBox">
        <property name="geometry">
         <rect>
          <x>320</x>
@@ -2024,7 +2027,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>6</string>
+         <string>5</string>
         </property>
        </widget>
        <widget class="QLabel" name="label">
@@ -2050,7 +2053,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>2</string>
+         <string>1</string>
         </property>
        </widget>
       </widget>

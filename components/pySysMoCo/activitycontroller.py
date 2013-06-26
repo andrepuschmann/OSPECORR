@@ -1,14 +1,13 @@
-from PyQt4 import QtCore
 import numpy as np
 import time
 import random
 import threading
-import scl
-import radioconfig_pb2
+from radioconfig import RadioConfig
 
 class ActivityController(threading.Thread):
     _stop = threading.Event()
-    recvSignal = QtCore.pyqtSignal()    
+    _pause = threading.Event()    
+    radioconfig = RadioConfig()
     
     def __init__(self, channels, propabilities, dutycycle, interarrivaltime, engineName=None, componentName=None):
          threading.Thread.__init__(self)
@@ -16,11 +15,11 @@ class ActivityController(threading.Thread):
          self.props = propabilities
          self.dutycycle = dutycycle
          self.interarrivaltime = interarrivaltime
+         
          if engineName is None:
             self.engineName = "phyengine1"
          else:
             self.engineName = engineName
-            
          if componentName is None:
             self.componentName = "usrptx1"
          else:
@@ -28,6 +27,18 @@ class ActivityController(threading.Thread):
          print "Enginename %s" % self.engineName
          
          _stop = threading.Event()
+         _pause = threading.Event()
+
+    def pause(self):
+        print "pause thread"
+        self._pause.set()
+    
+    def resume(self):
+        print "resume thread"
+        self._pause.clear()
+    
+    def paused(self):
+        return self._pause.isSet()
 
     def stop(self):
         print "stop called"
@@ -45,36 +56,6 @@ class ActivityController(threading.Thread):
             if x < cumulative_probability: break
         return item
 
-
-    def tuneRadio(self, freq):
-        print "Tune Radio"
-        map = scl.generate_map("pySysMoCo")
-        radioconfigcontrol = map["radioconfcontrol"]
-
-        #Create request for radio reconfiguration
-        request = radioconfig_pb2.RadioConfigControl()
-        request.type = radioconfig_pb2.REQUEST
-        request.command = radioconfig_pb2.SET_RADIO_CONFIG
-
-        # add engine and component to message
-        engine = request.radioconf.engines.add()
-        engine.name = str(self.engineName)
-        component = engine.components.add()
-        component.name = str(self.componentName)
-        
-        # add paramters
-        txfreq = component.parameters.add()
-        txfreq.name = "frequency"
-        txfreq.value = str(freq)
-        
-        #send request
-        string = request.SerializeToString()
-        radioconfigcontrol.send(string)
-        #wait for reply, fixme: check result
-        string = radioconfigcontrol.recv()
-        print "Got reply from radio"
-
-
     def run(self):
         # check if they add up to 1.0
         propsum = 0
@@ -84,27 +65,29 @@ class ActivityController(threading.Thread):
             print "Cumulative probability is not one."
             return
 
+        # start in pause mode
+        self.pause()
+
         # start work
         print "Start : %s" % time.ctime()
         while not self.stopped():
-            # get freq of next channel
-            freq = self.random_pick(self.channels, self.props)
-            self.tuneRadio(freq)
-            
-            # draw sample to see for how long we have to turn on transmitter
-            duty = np.random.poisson(self.dutycycle)
-            print "Duty %ss" % duty
-            time.sleep(duty)
-            
-            # wait until transmitter tunes to next channel
-            wait = np.random.poisson(self.interarrivaltime)
-            print "Wait %ss" % wait
-            # FIXME: should pause radio here
-            time.sleep(wait)
-
+            # pause loop
+            while not self.paused():
+                # get freq of next channel
+                freq = self.random_pick(self.channels, self.props)
+                print "Tune to frequency %s" % freq
+                self.radioconfig.tuneRadio(freq)
+                
+                # draw sample to see for how long we have to turn on transmitter
+                duty = np.random.poisson(self.dutycycle)
+                print "Duty %ss" % duty
+                time.sleep(duty)
+                
+                # wait until transmitter tunes to next channel
+                wait = np.random.poisson(self.interarrivaltime)
+                print "Wait %ss" % wait
+                # FIXME: should pause radio here
+                time.sleep(wait)
+            print "thread paused .."
+            time.sleep(1)
         print "End : %s" % time.ctime()
-            
-
-            
-
-
