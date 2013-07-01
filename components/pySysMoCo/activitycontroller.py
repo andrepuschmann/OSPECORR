@@ -6,7 +6,7 @@ from radioconfig import RadioConfig
 
 class ActivityController(threading.Thread):
     _stop = threading.Event()
-    _pause = threading.Event()    
+    _pause = threading.Event()
     radioconfig = RadioConfig()
     
     def __init__(self, channels, propabilities, dutycycle, interarrivaltime, engineName=None, componentName=None):
@@ -46,6 +46,19 @@ class ActivityController(threading.Thread):
 
     def stopped(self):
         return self._stop.isSet()
+        
+    def update_probabilites(self, probs):
+        # check if they add up to 1.0
+        propsum = 0
+        for i in probs:
+            propsum+=i
+        if propsum != 1.0:
+            print "Cumulative probability is not 1.0, aborting."
+            return -1
+        self.props = probs
+        print "Channel probabilities have been updated to" 
+        print self.props
+        return 0
 
     # From PythonCookBook, to draw from list with fix probability
     def random_pick(self, some_list, probabilities):
@@ -57,16 +70,12 @@ class ActivityController(threading.Thread):
         return item
 
     def run(self):
-        # check if they add up to 1.0
-        propsum = 0
-        for i in self.props:
-            propsum+=i
-        if propsum != 1.0:
-            print "Cumulative probability is not one."
-            return
 
         # start in pause mode
         self.pause()
+        
+        if self.update_probabilites(self.props) == -1:
+            return
 
         # start work
         print "Start : %s" % time.ctime()

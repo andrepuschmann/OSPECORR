@@ -108,6 +108,8 @@ class mainDialog(QtGui.QDialog):
         try:
             if self.activityThread.isAlive():
                 print "thread exists already .."
+                probs = self.getProbabilities()
+                self.activityThread.update_probabilites(probs)
                 return True
         except:
             pass
@@ -122,11 +124,7 @@ class mainDialog(QtGui.QDialog):
             return False
         
         # prepare propabilities
-        props = []
-        props.append(float(self.ui.propCh1.text()))
-        props.append(float(self.ui.propCh2.text()))
-        props.append(float(self.ui.propCh3.text()))
-        print props
+        probs = self.getProbabilities()
         
         # start thread
         print "Start thread .."
@@ -136,12 +134,19 @@ class mainDialog(QtGui.QDialog):
         componentName = self.ui.componentName.text()
         
         try:
-            self.activityThread = ActivityController(self.displaychannellist, props, dutycycle, interarrivaltime, engineName, componentName)
+            self.activityThread = ActivityController(self.displaychannellist, probs, dutycycle, interarrivaltime, engineName, componentName)
             self.activityThread.start()
             return True
         except:
             pass
 
+
+    def getProbabilities(self):
+        probs = []
+        probs.append(float(self.ui.propCh1.text()))
+        probs.append(float(self.ui.propCh2.text()))
+        probs.append(float(self.ui.propCh3.text()))
+        return probs
 
     def automaticButtonClicked(self):
         print "AutomaticButton clicked"
