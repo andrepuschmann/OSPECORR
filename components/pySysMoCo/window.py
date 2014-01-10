@@ -33,6 +33,8 @@ import time
 
 # import own classes
 from listener import ListenerTask
+from activitycontroller import ActivityController
+from radioconfig import RadioConfig
 import scl
 import application_pb2
 import linklayer_pb2
@@ -75,22 +77,130 @@ class mainDialog(QtGui.QDialog):
         self.ui.applyChangesButton.clicked.connect(self.reconfigRadio)
         self.ui.componentList.currentItemChanged.connect(self.updateParamTable)
         self.ui.parameterTable.setHorizontalHeaderLabels(["Name", "Value"])
-
+        # PU control tab
+        self.ui.automaticButton.clicked.connect(self.automaticButtonClicked)
+        self.ui.manualButton.clicked.connect(self.manualButtonClicked)
+        self.ui.ch1Button.clicked.connect(self.channelButtonClicked)
+        self.ui.ch2Button.clicked.connect(self.channelButtonClicked)
+        self.ui.ch3Button.clicked.connect(self.channelButtonClicked)
         # neighbortable has 4 columns (address, tx packets, rx packets, rx lost packets)
         self.ui.neighborTable.setColumnCount(4)
         self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets", "Lost packets"])
         self.lastChannel = 0 # to reset last channel
         self.paused = False
 
-        # connect listener
-        #self.listenerQosReq.recvSignal.connect(self.updateQosReq)
-        #self.listenerLinkStats.recvSignal.connect(self.updateLinkStats)
+        # connect and start listener
         self.listenerPhyEvent.recvSignal.connect(self.updatePhy)
         self.listenerLinkLayerEvent.recvSignal.connect(self.updateLinkLayer)
-
-        # start listener threads
         self.listenerPhyEvent.start()
         self.listenerLinkLayerEvent.start()
+        
+        # initialze GUI in manual mode
+        self.manualButtonClicked()
+
+
+    ''' This function tries to initialize the activity thread object
+        it's always save to call this, the object is only created once
+    '''
+    def tryInitActivityObject(self):
+        print "initactivityobject"
+        
+        try:
+            if self.activityThread.isAlive():
+                print "thread exists already .."
+                probs = self.getProbabilities()
+                self.activityThread.update_probabilites(probs)
+                return True
+        except:
+            pass
+        
+        # prepare channel list
+        channellist = self.displaychannellist
+        #channellist = [2400000000L, 2404000000L, 2408000000L]
+        print channellist
+        
+        if not self.displaychannellist:
+            print "No channels specified so far, abort."
+            return False
+        
+        # prepare propabilities
+        probs = self.getProbabilities()
+        
+        # start thread
+        print "Start thread .."
+        dutycycle = float(self.ui.dutyCycle.text())
+        interarrivaltime = float(self.ui.interarrivalTime.text())
+        engineName = self.ui.engineName.text()
+        componentName = self.ui.componentName.text()
+        
+        try:
+            self.activityThread = ActivityController(self.displaychannellist, probs, dutycycle, interarrivaltime, engineName, componentName)
+            self.activityThread.start()
+            return True
+        except:
+            pass
+
+
+    def getProbabilities(self):
+        probs = []
+        probs.append(float(self.ui.propCh1.text()))
+        probs.append(float(self.ui.propCh2.text()))
+        probs.append(float(self.ui.propCh3.text()))
+        return probs
+
+    def automaticButtonClicked(self):
+        print "AutomaticButton clicked"
+        self.tryInitActivityObject()
+        
+        # enable widgets as needed
+        self.ui.ch1Button.setEnabled(False)
+        self.ui.ch2Button.setEnabled(False)
+        self.ui.ch3Button.setEnabled(False)
+        self.ui.propBox.setEnabled(True)
+        self.ui.poissonBox.setEnabled(True)
+        # resume thread
+        try:
+            self.activityThread.resume()
+        except:
+            pass
+        
+        
+    def manualButtonClicked(self):
+        print "manualButtonClicked"
+        # enable widgets as needed
+        self.ui.propBox.setEnabled(False)
+        self.ui.poissonBox.setEnabled(False)
+        self.ui.ch1Button.setEnabled(True)
+        self.ui.ch2Button.setEnabled(True)
+        self.ui.ch3Button.setEnabled(True)
+        # pause thread
+        try:
+            self.activityThread.pause()
+        except:
+            pass
+          
+    
+    def channelButtonClicked(self):
+        print "channelButtonClicked"
+        if self.tryInitActivityObject() == False:
+            print "init failed"
+            return
+        config = RadioConfig()
+        if self.ui.ch1Button.isChecked():
+            print "channel 1 cliked"
+            index = 0
+        elif self.ui.ch2Button.isChecked():
+            print "channel 2 cliked"
+            index = 1
+        elif self.ui.ch3Button.isChecked():
+            print "channel 3 cliked"
+            index = 2
+
+        # hack to get key for specific value
+        for key, value in self.displaychannellist.items():
+            if value == index:
+                print "freq is: %s" % key
+                config.tuneRadio(key)
 
     def pauseButtonClicked(self):
         self.paused = not self.paused
@@ -368,6 +478,11 @@ class mainDialog(QtGui.QDialog):
         #self.listenerChStatusUpdate.stop()
         #self.listenerQosReq.stop()
         #self.listenerLinkStats.stop()
+        try:
+            self.activityThread.pause()
+            self.activityThread.stop()
+        except:
+            pass
         self.listenerPhyEvent.stop()
         self.listenerLinkLayerEvent.stop()
         self.close()
