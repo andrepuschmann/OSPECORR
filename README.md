@@ -51,6 +51,7 @@ $ cd ./OSPECORR
 $ export OSPECORR_PATH=$PWD
 $ export SCL_CACHE_GENERATOR=$OSPECORR_PATH/scl/tools/gen_cache.sh
 $ export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 ```
 
 4. To store the configuration permanently, put them into your .bashrc (and reinstalize your environment)
@@ -59,6 +60,7 @@ $ export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml
 $ echo "export OSPECORR_PATH=$PWD" >> $HOME/.bashrc
 $ echo 'export SCL_CACHE_GENERATOR=$OSPECORR_PATH/scl/tools/gen_cache.sh' >> $HOME/.bashrc
 $ echo 'export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml' >> $HOME/.bashrc
+$ echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib' >> $HOME/.bashrc
 $ bash
 ```
 
@@ -88,7 +90,7 @@ $ make install
 $ cmake -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
-6. You're done! OSPECORR should be built and installed. Let's try it out by starting an example component which publishes
+6. You're done! OSPECORR should be built and installed. Let's try it out by starting an example component which publishes (randomly generated)
 RSSI measurements over SCL.
 
     6.1. Start the example PHY publisher (which is a Python app and therefore requires a Python interpreter)
