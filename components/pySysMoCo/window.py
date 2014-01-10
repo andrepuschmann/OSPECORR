@@ -77,12 +77,13 @@ class mainDialog(QtGui.QDialog):
         self.ui.applyChangesButton.clicked.connect(self.reconfigRadio)
         self.ui.componentList.currentItemChanged.connect(self.updateParamTable)
         self.ui.parameterTable.setHorizontalHeaderLabels(["Name", "Value"])
-        # PU control tab
+        # Activity control tab
         self.ui.automaticButton.clicked.connect(self.automaticButtonClicked)
         self.ui.manualButton.clicked.connect(self.manualButtonClicked)
         self.ui.ch1Button.clicked.connect(self.channelButtonClicked)
         self.ui.ch2Button.clicked.connect(self.channelButtonClicked)
         self.ui.ch3Button.clicked.connect(self.channelButtonClicked)
+        self.manualButtonClicked() # initialze GUI in manual mode
         # neighbortable has 4 columns (address, tx packets, rx packets, rx lost packets)
         self.ui.neighborTable.setColumnCount(4)
         self.ui.neighborTable.setHorizontalHeaderLabels(["Node Address", "TX packets", "RX packets", "Lost packets"])
@@ -94,9 +95,6 @@ class mainDialog(QtGui.QDialog):
         self.listenerLinkLayerEvent.recvSignal.connect(self.updateLinkLayer)
         self.listenerPhyEvent.start()
         self.listenerLinkLayerEvent.start()
-        
-        # initialze GUI in manual mode
-        self.manualButtonClicked()
 
 
     ''' This function tries to initialize the activity thread object

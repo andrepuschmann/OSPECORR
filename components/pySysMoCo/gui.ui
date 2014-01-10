@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>740</width>
-    <height>667</height>
+    <width>777</width>
+    <height>694</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -64,7 +64,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>7</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_overview">
       <attribute name="title">
@@ -1851,7 +1851,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="title">
-       <string>PU control</string>
+       <string>Activity Control</string>
       </attribute>
       <widget class="QGroupBox" name="channelBox">
        <property name="geometry">
@@ -1977,7 +1977,7 @@
          <rect>
           <x>10</x>
           <y>30</y>
-          <width>301</width>
+          <width>311</width>
           <height>91</height>
          </rect>
         </property>
