@@ -183,7 +183,11 @@ class mainDialog(QtGui.QDialog):
         if self.tryInitActivityObject() == False:
             print "init failed"
             return
-        config = RadioConfig()
+        
+        engineName = self.ui.engineName.text()
+        componentName = self.ui.componentName.text()            
+        config = RadioConfig(engineName, componentName)
+
         if self.ui.ch1Button.isChecked():
             print "channel 1 cliked"
             index = 0

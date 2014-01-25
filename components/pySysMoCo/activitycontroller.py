@@ -7,7 +7,6 @@ from radioconfig import RadioConfig
 class ActivityController(threading.Thread):
     _stop = threading.Event()
     _pause = threading.Event()
-    radioconfig = RadioConfig()
     
     def __init__(self, channels, propabilities, dutycycle, interarrivaltime, engineName=None, componentName=None):
          threading.Thread.__init__(self)
@@ -24,7 +23,11 @@ class ActivityController(threading.Thread):
             self.componentName = "usrptx1"
          else:
             self.componentName = componentName
-         print "Enginename %s" % self.engineName
+         
+         print "Engine name %s" % self.engineName
+         print "Component name %s" % self.componentName
+         
+         self.radioconfig = RadioConfig(engineName, componentName)
          
          _stop = threading.Event()
          _pause = threading.Event()

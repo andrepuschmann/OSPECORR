@@ -1901,7 +1901,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Ch2</string>
+         <string>Ch3</string>
         </property>
        </widget>
       </widget>
@@ -2108,7 +2108,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>usrptx1</string>
+         <string>bladerftx1</string>
         </property>
        </widget>
       </widget>

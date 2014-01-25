@@ -23,7 +23,7 @@ class RadioConfig():
         component = engine.components.add()
         component.name = str(self.componentName)
         
-        # add paramters
+        # add parameters
         txfreq = component.parameters.add()
         txfreq.name = str(self.parameterName)
         txfreq.value = str(freq)
