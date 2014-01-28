@@ -48,6 +48,7 @@ ADD_CUSTOM_TARGET(uninstall_ospecorr
 # Add the subdirectories
 ########################################################################
 ADD_SUBDIRECTORY(message-defs)
+ADD_SUBDIRECTORY(lib)
 ADD_SUBDIRECTORY(scl)
 ADD_SUBDIRECTORY(components)
 
