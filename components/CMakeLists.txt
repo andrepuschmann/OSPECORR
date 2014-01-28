@@ -2,6 +2,7 @@
 ADD_SUBDIRECTORY (pySysMoCo)
 ADD_SUBDIRECTORY (examplePhyPublisher)
 ADD_SUBDIRECTORY (examplePhySubscriber)
+ADD_SUBDIRECTORY (exampleRadioReconfigurator)
 
 # check which version of Iris
 IF(NOT IRIS_TUI)

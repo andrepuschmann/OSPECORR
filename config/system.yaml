@@ -45,6 +45,10 @@ components:
    - name: RadioConfigController
      gates:
       - control: rep
+      
+   - name: RadioConfigClient
+     gates:
+      - control: req
 
    # This is a abstract name for PHY layer component
    # such as a sensing block or demodulator
@@ -72,6 +76,7 @@ connections:
    - [ pySysMoCo.drmevent,            drm.event ]
    - [ pySysMoCo.drmclientdata,       drmclient.data ]
    - [ pySysMoCo.radioconfcontrol,    RadioConfigController.control ]
+   - [ RadioConfigClient.control,     RadioConfigController.control ]
    - [ ExampleModule.phyevent,        PhyComponent.event ]
    - [ drmclient.control,             drm.control ]
    - [ drmclient.data,                drm.data ]
