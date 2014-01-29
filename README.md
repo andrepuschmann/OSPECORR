@@ -8,11 +8,10 @@ field of Cognitive Radio (CR).
 Cognitive Radios are often built on top of a so called __Software Defined Radio (SDR)__ that enables the flexible reconfiguration
 and adaption of the radio during runtime. Moreover, a typical CR design comprises other components including a 
 __Cognitive Resource Manager (CRM)__
-or an __Radio Environment Database (REM)__ that allows to store certain information gathered through spectrum sensing. Naturally, t
-he components of the radio are required to exchange information among each other and this is where OSPECORR comes into play.
+or an __Radio Environment Database (REM)__ that allows to store certain information gathered for instance through spectrum sensing. Naturally, the components of the radio are required to exchange information among each other and this is where OSPECORR comes into play.
 
 Rather than implementing the entire radio inside a single application, OSPECORR allows to split the functionality among
-different components that communicate with each other over a middleware called SCL. 
+different components that communicate with each other over a middleware called SCL. SCL allows to describe the structure of the messages using Google's Protocol Buffers, all definitions can be find in the __message-defs__ path. Those messages are then sent through ZeroMQ sockets. All components and their links are defined inside a YAML configuration file stored in __config__ path.
 
 
 ### Project structure:
@@ -22,6 +21,7 @@ The general project structure is shown below:
 * __components__
     * __examplePhySubscriber__: An example SCL subscriber application written in C++
     * __examplePhyPublisher__: An example SCL publisher application written in Python
+    * __exampleRadioReconfigurator__: An example application demonstrating how to reconfigure a running Iris instance
     * __gnuradio__: GNU-Radio scripts
     * __iris__: A reconfigurable component-based software radio framework
     * __pySysMoCo__: A Python+QT GUI application for system monitoring and control
@@ -90,15 +90,15 @@ $ make install
 $ cmake -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
-6. You're done! OSPECORR should be built and installed. Let's try it out by starting an example component which publishes (randomly generated)
+7. You're done! OSPECORR should be built and installed. Let's try it out by starting an example component which publishes (randomly generated)
 RSSI measurements over SCL.
 
-    6.1. Start the example PHY publisher (which is a Python app and therefore requires a Python interpreter)
+    7.1. Start the example PHY publisher (which is a Python app and therefore requires a Python interpreter)
     ```bash
 $ python /usr/local/bin/OSPECORR/examplePhyPublisher.py
 ```
 
-    6.2. Start the example PHY subscriber in another console (which is a standard C++ application and be started without parameter)
+    7.2. Start the example PHY subscriber in another console (which is a standard C++ application and be started without parameter)
     ```bash
 $ /usr/local/bin/OSPECORR/examplePhySubscriber
 ```
@@ -111,3 +111,17 @@ $ /usr/local/bin/OSPECORR/examplePhySubscriber
     ```bash
 $ python /usr/local/bin/OSPECORR/pySysMoCo.py
 ```
+
+8. As another example, let's run a simple Iris radio and let an external application reconfigure the running radio. Let's say, we would like to increase the transmit power, i.e. transmitter gain, periodically. 
+
+    8.1. Start the AlohaMac Iris radio that periodically transmits packets. Note that any radio that wants to be reconfigurable from within an external application needs to include the __RadioConfig controller__ in its XML radio specification.
+    
+
+
+    8.2. After making sure that radio is running, call the exampleRadioReconfigurator
+
+
+    8.3. Looking at a spectrum analyzer should give something similar to this. One can see that the transmit power is increased peridically exhibiting a ramp characteristic.
+    
+
+    ![Waterfall plot of the exampleRadioReconfigurator](https://f.cloud.github.com/assets/525775/2027689/84ded0a6-88bc-11e3-9d01-94251baa86ad.jpg "GNU Radio screenshot")
