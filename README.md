@@ -98,14 +98,14 @@ RSSI measurements over SCL.
 $ python /usr/local/bin/OSPECORR/examplePhyPublisher.py
 ```
 
-    7.2. Start the example PHY subscriber in another console (which is a standard C++ application and be started without parameter)
+    7.2. Start the example PHY subscriber in another console (which is a standard C++ application and can be started without parameter)
     ```bash
 $ /usr/local/bin/OSPECORR/examplePhySubscriber
 ```
     You should now be able to see the incoming measurements from the publishing application
     
     
-    6.3. Let's also start pySysMoCo on a third console. pySysMoCo should also be able to visualize the measurements
+    7.3. Let's also start pySysMoCo on a third console. pySysMoCo should also be able to visualize the measurements
     coming from the first application. Please note that we have to start pySysMoCo from the source directory as it has
     some file dependencies such as the UI file. You should be able to see regular RSSI updates in the PHY tab of pySysMoCo.
     ```bash
@@ -115,10 +115,18 @@ $ python /usr/local/bin/OSPECORR/pySysMoCo.py
 8. As another example, let's run a simple Iris radio and let an external application reconfigure the running radio. Let's say, we would like to increase the transmit power, i.e. transmitter gain, periodically. 
 
     8.1. Start the AlohaMac Iris radio that periodically transmits packets. Note that any radio that wants to be reconfigurable from within an external application needs to include the __RadioConfig controller__ in its XML radio specification.
-    
 
+
+      ```bash
+$ cd ../examples/alohamac
+$ iris -t /usr/local/lib/iris_modules/components/gpp/stack/ -p /usr/local/lib/iris_modules/components/gpp/phy/ alohamac_liquidofdm_tx.xml
+```
 
     8.2. After making sure that radio is running, call the exampleRadioReconfigurator
+
+      ```bash
+$ /usr/local/bin/OSPECORR/exampleRadioReconfigurator
+```
 
 
     8.3. Looking at a spectrum analyzer should give something similar to this. One can see that the transmit power is increased peridically exhibiting a ramp characteristic.
