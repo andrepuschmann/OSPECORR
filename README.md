@@ -119,7 +119,7 @@ $ python /usr/local/bin/OSPECORR/pySysMoCo.py
 
       ```bash
 $ cd ../examples/alohamac
-$ iris -t /usr/local/lib/iris_modules/components/gpp/stack/ -p /usr/local/lib/iris_modules/components/gpp/phy/ -c /usr/local/lib/iris_modules/components/gpp/phy/ alohamac_liquidofdm_tx.xml
+$ iris -t /usr/local/lib/iris_modules/components/gpp/stack/ -p /usr/local/lib/iris_modules/components/gpp/phy/ -c /usr/local/lib/iris_modules/controllers/ alohamac_liquidofdm_tx.xml
 ```
 
     8.2. After making sure that radio is running, call the exampleRadioReconfigurator
