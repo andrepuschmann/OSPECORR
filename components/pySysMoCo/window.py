@@ -218,12 +218,13 @@ class mainDialog(QtGui.QDialog):
         print "Hello, World!"
 
     def clearButtonClicked(self):
+        self.ui.statusChannel0.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         self.ui.statusChannel1.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         self.ui.statusChannel2.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         self.ui.statusChannel3.setStyleSheet("background-color:rgb(140,140,140);"); #grey
         self.ui.statusChannel4.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.ui.statusChannel5.setStyleSheet("background-color:rgb(140,140,140);"); #grey
-        self.ui.currentChannel.setText('none')
+        self.ui.channelRadio0.setText('none')
+        self.ui.channelRadio1.setText('none')
         self.ui.messageLog.clear()
 
     def updateMessageLog(self):
@@ -232,7 +233,7 @@ class mainDialog(QtGui.QDialog):
             self.ui.messageLog.append(update.statusMessage)
 
         # label for current channel
-        self.ui.currentChannel.setText(str(update.channel + 1) + ' (' + update.description + ')')
+        self.ui.channelRadio0.setText(str(update.channel + 1) + ' (' + update.description + ')')
 
 
     def updateQosReq(self):
@@ -261,8 +262,6 @@ class mainDialog(QtGui.QDialog):
             return "free"
         elif state == phy_pb2.BUSY_SU:
             return "busy"
-        elif state == phy_pb2.BUSY_CU:
-            return "busy classical user"
         elif state == phy_pb2.BUSY_PU:
             return "PU active"
         elif state == phy_pb2.UNKNOWN:
@@ -286,22 +285,25 @@ class mainDialog(QtGui.QDialog):
             objectHandle = eval(objectName)
             objectHandle.setText(str(message.channel.f_center/1000000) + ' MHz') # channel map starts with zero
 
-            # update channel activity
-            objectName = "self.ui.statusChannel" + str(self.displaychannellist[message.channel.f_center])
-            #print objectName
-            objectHandle = eval(objectName)
-            if message.state == phy_pb2.FREE:
-                objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
-            elif message.state == phy_pb2.BUSY_SU:
-                objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
-            elif message.state == phy_pb2.BUSY_PU:
-                objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
-            elif message.state == phy_pb2.UNKNOWN:
-                objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
-
             # update operating channel, if applicable
             if message.is_active == True:
-                self.ui.currentChannel.setText('Ch ' + str(self.displaychannellist[message.channel.f_center] + 1))
+                objectName = "self.ui.channelRadio" + str(message.trx)
+                objectHandle = eval(objectName)
+                objectHandle.setText('Channel ' + str(self.displaychannellist[message.channel.f_center] + 1))
+            
+            # update channel activity for TRx 0 only
+            if message.trx == 0:            
+                objectName = "self.ui.statusChannel" + str(self.displaychannellist[message.channel.f_center])
+                #print objectName
+                objectHandle = eval(objectName)
+                if message.state == phy_pb2.FREE:
+                    objectHandle.setStyleSheet("background-color:rgb(0,170,0);");
+                elif message.state == phy_pb2.BUSY_SU:
+                    objectHandle.setStyleSheet("background-color:rgb(255,140,0);");
+                elif message.state == phy_pb2.BUSY_PU:
+                    objectHandle.setStyleSheet("background-color:rgb(255,0,0);");
+                elif message.state == phy_pb2.UNKNOWN:
+                    objectHandle.setStyleSheet("background-color:rgb(140,140,140);");
 
             return
 
