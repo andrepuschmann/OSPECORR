@@ -3,9 +3,8 @@ package scl_phy;
 enum ChannelState {
   FREE = 0;
   BUSY_SU = 1;
-  BUSY_CU = 2;
   BUSY_PU = 2;
-  UNKNOWN = 4;
+  UNKNOWN = 3;
 }
 
 // this is the most elementary view of what a "channel" actually is, i.e. only frequency domain
@@ -26,4 +25,5 @@ message PhyMessage {
   optional float fer = 9;                               // frame error rate
   repeated float fft_bin = 10;                          // FFT bins
   optional string status_message = 11;                  // A status message which may be logged or just displayed
+  optional int32 trx = 12;                              // The TRx ID
 }
