@@ -8,12 +8,12 @@ class ActivityController(threading.Thread):
     _stop = threading.Event()
     _pause = threading.Event()
     
-    def __init__(self, channels, propabilities, dutycycle, interarrivaltime, engineName=None, componentName=None):
+    def __init__(self, channels, propabilities, avgHoldTime, minHoldTime, engineName=None, componentName=None):
          threading.Thread.__init__(self)
          self.channels = channels
          self.props = propabilities
-         self.dutycycle = dutycycle
-         self.interarrivaltime = interarrivaltime
+         self.avgHoldTime = avgHoldTime
+         self.minHoldTime = minHoldTime
          
          if engineName is None:
             self.engineName = "phyengine1"
@@ -90,16 +90,12 @@ class ActivityController(threading.Thread):
                 print "Tune to frequency %s" % freq
                 self.radioconfig.tuneRadio(freq)
                 
-                # draw sample to see for how long we have to turn on transmitter
-                duty = np.random.poisson(self.dutycycle)
-                print "Duty %ss" % duty
-                time.sleep(duty)
+                # draw sample to see for how long we have to stay on channel
+                holdtime = np.random.poisson(self.avgHoldTime)
+                holdtime = max(holdtime, self.minHoldTime) # stay at least for minHoldTime
+                print "Holdtime %s" % holdtime
+                time.sleep(holdtime)
                 
-                # wait until transmitter tunes to next channel
-                wait = np.random.poisson(self.interarrivaltime)
-                print "Wait %ss" % wait
-                # FIXME: should pause radio here
-                time.sleep(wait)
             print "thread paused .."
             time.sleep(1)
         print "End : %s" % time.ctime()

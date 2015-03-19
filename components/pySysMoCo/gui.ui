@@ -2020,7 +2020,7 @@
          <rect>
           <x>10</x>
           <y>30</y>
-          <width>311</width>
+          <width>313</width>
           <height>91</height>
          </rect>
         </property>
@@ -2030,7 +2030,7 @@
            <item>
             <widget class="QLabel" name="label_2">
              <property name="text">
-              <string>Inter-arrival time (s):</string>
+              <string>Average channel hold time (s):</string>
              </property>
             </widget>
            </item>
@@ -2048,9 +2048,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="interarrivalTime">
+            <widget class="QLineEdit" name="avgHoldTime">
              <property name="text">
-              <string>1</string>
+              <string>10</string>
              </property>
             </widget>
            </item>
@@ -2061,7 +2061,7 @@
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Duty cycle (s):</string>
+              <string>Minimum hold time (s):</string>
              </property>
             </widget>
            </item>
@@ -2079,9 +2079,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLineEdit" name="dutyCycle">
+            <widget class="QLineEdit" name="minHoldTime">
              <property name="text">
-              <string>5</string>
+              <string>4</string>
              </property>
             </widget>
            </item>

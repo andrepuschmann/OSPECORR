@@ -126,13 +126,13 @@ class mainDialog(QtGui.QDialog):
         
         # start thread
         print "Start thread .."
-        dutycycle = float(self.ui.dutyCycle.text())
-        interarrivaltime = float(self.ui.interarrivalTime.text())
+        avg_holdtime = float(self.ui.avgHoldTime.text())
+        min_holdtime = float(self.ui.minHoldTime.text())
         engineName = self.ui.engineName.text()
         componentName = self.ui.componentName.text()
         
         try:
-            self.activityThread = ActivityController(self.displaychannellist, probs, dutycycle, interarrivaltime, engineName, componentName)
+            self.activityThread = ActivityController(self.displaychannellist, probs, avg_holdtime, min_holdtime, engineName, componentName)
             self.activityThread.start()
             return True
         except:
