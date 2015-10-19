@@ -7,3 +7,6 @@
 [submodule "components/iris_modules"]
 	path = components/iris_modules
 	url = https://github.com/andrepuschmann/iris_modules.git
+[submodule "components/iris_fll_modules"]
+	path = components/iris_fll_modules
+	url = https://github.com/andrepuschmann/iris_fll_modules.git
