@@ -54,7 +54,7 @@ $ export SCL_CONFIG=$OSPECORR_PATH/config/system.yaml
 $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 ```
 
-4. To store the configuration permanently, put them into your .bashrc (and reinstalize your environment)
+4. To store the configuration permanently, put them into your .bashrc or .zshrc or .profile (and reinstalize your environment)
 
     ```bash
 $ echo "export OSPECORR_PATH=$PWD" >> $HOME/.bashrc
