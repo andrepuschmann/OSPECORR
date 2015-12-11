@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>777</width>
-    <height>694</height>
+    <height>779</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -64,7 +64,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>8</number>
      </property>
      <widget class="QWidget" name="tab_overview">
       <attribute name="title">
@@ -1825,7 +1825,7 @@
             <rect>
              <x>10</x>
              <y>30</y>
-             <width>271</width>
+             <width>201</width>
              <height>361</height>
             </rect>
            </property>
@@ -1848,7 +1848,7 @@
             <rect>
              <x>10</x>
              <y>30</y>
-             <width>221</width>
+             <width>361</width>
              <height>361</height>
             </rect>
            </property>
@@ -1889,6 +1889,19 @@
        </property>
        <property name="text">
         <string>Apply Changes</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="radioOptimizer">
+       <property name="geometry">
+        <rect>
+         <x>254</x>
+         <y>12</y>
+         <width>105</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Radio Optimizer</string>
        </property>
       </widget>
      </widget>
@@ -2198,6 +2211,648 @@
         <property name="text">
          <string>Automatic</string>
         </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="Radio_Optimizer">
+      <attribute name="title">
+       <string>Radio Optimizer</string>
+      </attribute>
+      <widget class="QTabWidget" name="Optimizer_tab">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>741</width>
+         <height>671</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="Controller_Configuration">
+        <attribute name="title">
+         <string>Controller Configuration</string>
+        </attribute>
+        <widget class="QWidget" name="horizontalLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>11</x>
+           <y>46</y>
+           <width>721</width>
+           <height>501</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_55">
+          <item>
+           <widget class="QGroupBox" name="groupBox_19">
+            <property name="title">
+             <string>Components</string>
+            </property>
+            <widget class="QListWidget" name="componentList_opt">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>20</y>
+               <width>271</width>
+               <height>181</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+            <widget class="QGroupBox" name="poissonBox_2">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>410</y>
+               <width>341</width>
+               <height>141</height>
+              </rect>
+             </property>
+             <property name="title">
+              <string>Local Server Configuration</string>
+             </property>
+             <widget class="QWidget" name="verticalLayoutWidget_2">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>30</y>
+                <width>313</width>
+                <height>91</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_13">
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_31">
+                 <item>
+                  <widget class="QLabel" name="label_5">
+                   <property name="text">
+                    <string>Control IP:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_49">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="serverControlIp">
+                   <property name="editable">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_32">
+                 <item>
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>Data IP</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_50">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="serverDataIp">
+                   <property name="editable">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+            <widget class="QListWidget" name="componentList_cli">
+             <property name="geometry">
+              <rect>
+               <x>30</x>
+               <y>220</y>
+               <width>271</width>
+               <height>181</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+            <widget class="QGroupBox" name="groupBox_20">
+             <property name="geometry">
+              <rect>
+               <x>340</x>
+               <y>0</y>
+               <width>356</width>
+               <height>531</height>
+              </rect>
+             </property>
+             <property name="title">
+              <string>Parameters</string>
+             </property>
+             <widget class="QTableWidget" name="parameterTable_opt">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>20</y>
+                <width>361</width>
+                <height>181</height>
+               </rect>
+              </property>
+              <property name="columnCount">
+               <number>4</number>
+              </property>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </column>
+              <column/>
+              <column/>
+             </widget>
+             <widget class="QTableWidget" name="parameterTable_cli">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>220</y>
+                <width>361</width>
+                <height>181</height>
+               </rect>
+              </property>
+              <property name="columnCount">
+               <number>4</number>
+              </property>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>1</string>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </column>
+              <column/>
+              <column/>
+             </widget>
+             <widget class="QGroupBox" name="poissonBox_3">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>410</y>
+                <width>341</width>
+                <height>141</height>
+               </rect>
+              </property>
+              <property name="title">
+               <string>Local Client Configuration</string>
+              </property>
+              <widget class="QWidget" name="verticalLayoutWidget_5">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>30</y>
+                 <width>313</width>
+                 <height>91</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_19">
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_41">
+                  <item>
+                   <widget class="QLabel" name="label_15">
+                    <property name="text">
+                     <string>Control IP:</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_59">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="clientControlIp">
+                    <property name="text">
+                     <string>192.168.1.106</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QHBoxLayout" name="horizontalLayout_42">
+                  <item>
+                   <widget class="QLabel" name="label_16">
+                    <property name="text">
+                     <string>Data IP</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <spacer name="horizontalSpacer_60">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="clientDataIp">
+                    <property name="text">
+                     <string>10.0.0.6</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QPushButton" name="getRadioButton_opt">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>10</y>
+           <width>85</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Get Radio</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="applyChangesButton_opt">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>10</y>
+           <width>105</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Apply Changes</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="radioOptimizer_start">
+         <property name="geometry">
+          <rect>
+           <x>400</x>
+           <y>10</y>
+           <width>121</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Start Optimization</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="radioOptimizer_stop">
+         <property name="geometry">
+          <rect>
+           <x>540</x>
+           <y>10</y>
+           <width>121</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Stop Optimization</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="browseCliXml">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>10</y>
+           <width>131</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Browse Client Config</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_30">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>590</y>
+           <width>121</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>No. of Individuals:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="NIND">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>600</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>30</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_32">
+         <property name="geometry">
+          <rect>
+           <x>560</x>
+           <y>590</y>
+           <width>131</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Mutation Probability:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="NGEN">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>600</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>30</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_29">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>590</y>
+           <width>121</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>No. of Generations:</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="CXPB">
+         <property name="geometry">
+          <rect>
+           <x>510</x>
+           <y>600</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0.9</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="MUTPB">
+         <property name="geometry">
+          <rect>
+           <x>690</x>
+           <y>600</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>0.05</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_31">
+         <property name="geometry">
+          <rect>
+           <x>370</x>
+           <y>590</y>
+           <width>141</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>CrossOver Probability:</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="Optimiter_plot">
+        <attribute name="title">
+         <string>Optimizer-plot</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_27">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_58">
+           <item>
+            <widget class="QWidget" name="qwtWidgetOptimizer" native="true">
+             <widget class="QPushButton" name="UpdateOptimizerPlot">
+              <property name="geometry">
+               <rect>
+                <x>580</x>
+                <y>530</y>
+                <width>105</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Update</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="label_33">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>470</y>
+                <width>121</width>
+                <height>40</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Best Configuration:</string>
+              </property>
+             </widget>
+             <widget class="QListWidget" name="best_config">
+              <property name="geometry">
+               <rect>
+                <x>130</x>
+                <y>480</y>
+                <width>411</width>
+                <height>131</height>
+               </rect>
+              </property>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="Opt_client">
+        <attribute name="title">
+         <string>Client</string>
+        </attribute>
+        <widget class="QPushButton" name="Start_Opt_Client">
+         <property name="geometry">
+          <rect>
+           <x>30</x>
+           <y>170</y>
+           <width>151</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Start Client</string>
+         </property>
+        </widget>
+        <widget class="QGroupBox" name="poissonBox_4">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>20</y>
+           <width>341</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <property name="title">
+          <string>Local Client Configuration</string>
+         </property>
+         <widget class="QWidget" name="verticalLayoutWidget_6">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>313</width>
+            <height>91</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_39">
+             <item>
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Control IP:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_57">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cli_ControlIp">
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_40">
+             <item>
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Data IP</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_58">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QComboBox" name="cli_DataIp">
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </widget>
       </widget>
      </widget>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+
+<softwareradio name="Radio1">
+  
+  <controller class="radioconfig"/>
+    
+  <controller class="macphy">
+      <parameter name="engineSensingModule" value="phyengine3"/>
+      <parameter name="componentSensingModule" value="energydetector1"/>
+      <parameter name="engineMacModule" value="phyengine2"/>
+      <parameter name="componentMacModule" value="softcsma1"/>
+      <parameter name="componentTxModule" value="usrptx1"/>
+      <parameter name="ccaThreshold" value="-65"/>
+      <parameter name="debug" value="false"/>
+  </controller>    
+
+  <controller class="genericdisplay">
+      <parameter name="eventtype" value="scatter"/>
+      <parameter name="eventname" value="scatterevent"/>
+      <parameter name="componentname" value="liquidofdmdemod1"/>
+      <parameter name="title" value="Receiver Constellation Plot"/>
+      <parameter name="xaxismin" value="-1.5"/>
+      <parameter name="xaxismax" value="1.5"/>
+      <parameter name="yaxismin" value="-1.5"/>
+      <parameter name="yaxismax" value="1.5"/>
+  </controller>
+
+  <engine name="stackengine1" class="stackengine">
+
+    <component name="tuntap0" class="tuntap">
+      <parameter name="device" value="tun0"/>
+      <parameter name="readfrombelow" value="true"/>
+      <port name="bottomport1" class="io"/>
+    </component>
+
+    <component name="gdtp0" class="gdtpcomp">
+      <parameter name="localaddress" value="1"/>
+      <parameter name="destinationaddress" value="2"/>
+      <parameter name="isethdevice" value="true"/>
+      <parameter name="ethdevicename" value="tun0"/>
+      <parameter name="isreliable" value="false"/>
+      <parameter name="acktimeout" value="20"/>
+      <parameter name="maxretry" value="3"/>
+      <port name="topport1" class="io"/>
+      <port name="bottomport1" class="io"/>
+    </component>
+
+  </engine>
+
+  <engine name="phyengine1" class="phyengine">
+
+    <component name="liquidofdmmod1" class="liquidofdmmod">
+      <parameter name="debug" value="false"/>
+      <parameter name="subcarriers" value="48"/>
+      <parameter name="prefixlength" value="6"/>
+      <parameter name="modulation" value="bpsk qpsk qam16 qam64"/>
+      <parameter name="gain" value="range(-10,-20,-2)"/>
+      <port name="input1" class="input"/>
+      <port name="output1" class="output"/>
+    </component>
+
+  </engine>
+  
+  <engine name="phyengine2" class="phyengine">
+
+    <component name="softcsma1" class="softcsma">
+      <parameter name="debug" value="true"/>
+      <parameter name="hascca" value="true"/>
+      <parameter name="hasdcfbehavior" value="true"/>
+      <parameter name="hasposttxbackoff" value="true"/>
+      <parameter name="hasburstack" value="true"/>
+      <parameter name="mincw" value="7"/>
+      <parameter name="maxcw" value="31"/>
+      <parameter name="slottime" value="430"/>
+      <parameter name="difs" value="1700"/>
+      <port name="input1" class="input"/>
+      <port name="output1" class="output"/>
+    </component>
+    
+    <component name="usrptx1" class="usrptx">
+      <parameter name="frequency" value="5010000000"/>
+      <parameter name="rate" value="2500000 3000000"/>
+      <parameter name="fixlooffset" value="2500000"/>
+      <parameter name="antenna" value="J1"/>
+      <parameter name="gain" value="12 13 14 15 16 18 20"/>
+      <parameter name="streaming" value="false"/>
+      <parameter name="numzerosamps" value="50"/>
+      <parameter name="hasburstackevent" value="true"/>
+      <port name="input1" class="input"/>
+    </component>
+
+  </engine>
+
+
+  <engine name="phyengine3" class="phyengine">
+
+    <component name="usrprx1" class="usrprx">
+      <parameter name="frequency" value="5010000000"/>
+      <parameter name="rate" value="2500000"/>
+      <parameter name="antenna" value="J1"/>
+      <parameter name="gain" value="30 20"/>
+      <parameter name="fixlooffset" value="2500000"/>
+      <parameter name="outputblocksize" value="256"/>
+      <port name="output1" class="output"/>
+    </component>
+    
+    <component name="energydetector1" class="energydetector">
+      <parameter name="debug" value="false"/>
+      <parameter name="isprobe" value="false"/>
+      <parameter name="issink" value="false"/>
+      <parameter name="ispassthrough" value="true"/>
+      <port name="input1" class="input"/>
+      <port name="output1" class="output"/>
+    </component>   
+       
+    <component name="liquidofdmdemod1" class="liquidofdmdemod">
+      <parameter name="debug" value="false"/>
+      <parameter name="hasscatterevent" value="true"/>
+      <parameter name="subcarriers" value="48"/>
+      <parameter name="prefixlength" value="6"/>
+      <port name="input1" class="input"/>
+      <port name="output1" class="output"/>
+    </component>
+
+  </engine>
+
+  <link source="usrprx1.output1" sink="energydetector1.input1" />
+  <link source="energydetector1.output1" sink="liquidofdmdemod1.input1" />
+  <link source="liquidofdmdemod1.output1" sink="gdtp0.bottomport1" />   
+
+  <link source="tuntap0.bottomport1" sink="gdtp0.topport1" />
+  <link source="gdtp0.bottomport1" sink="liquidofdmmod1.input1" />
+  <link source="liquidofdmmod1.output1" sink="softcsma1.input1" />
+  <link source="softcsma1.output1" sink="usrptx1.input1" />
+
+</softwareradio>

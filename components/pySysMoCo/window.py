@@ -24,10 +24,12 @@ from PyQt4 import QtGui, uic
 from PyQt4 import Qwt5 as Qwt
 from PyQt4 import Qt
 from PyQt4.Qwt5.anynumpy import *
+from PyQt4 import QtGui, QtCore
 #import matplotlib
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 from matplotlib.figure import Figure
+from netifaces import interfaces, ifaddresses, AF_INET
 import numpy
 import time
 
@@ -40,7 +42,12 @@ import application_pb2
 import linklayer_pb2
 import phy_pb2
 import radioconfig_pb2
-
+from controller import RadioOptimizer
+from client import ClientOptimizer
+import threading
+import thread
+import signal
+import os
 
 class mainDialog(QtGui.QDialog):
     # create listener objects
@@ -95,8 +102,61 @@ class mainDialog(QtGui.QDialog):
         self.listenerLinkLayerEvent.recvSignal.connect(self.updateLinkLayer)
         self.listenerPhyEvent.start()
         self.listenerLinkLayerEvent.start()
+        
+        self.optimize = True
+        #Radio optimizer code
+        #Client code
+        self.ui.Start_Opt_Client.clicked.connect(self.startOptClient)
+        self.cliOptimizer = ClientOptimizer()
+         
+        # create list of available network interfaces
+        addresses = []
+        for ifaceName in interfaces():
+            addr = [i['addr'] for i in ifaddresses(ifaceName).setdefault(AF_INET, [{'addr':'No IP addr'}] )]
+            #addresses.append(self.tr('%s: %s' % (ifaceName, ', '.join(addr))))
+            addresses.append(self.tr('%s' % (addr[0])))
+        #print addresses
+        # show them in gui
+        """
+        self.ui.clientControlIp.clear()
+        self.ui.clientControlIp.addItems(addresses)
+        self.ui.clientDataIp.clear()
+        self.ui.clientDataIp.addItems(addresses)
+        """
+        self.ui.serverControlIp.clear()
+        self.ui.serverControlIp.addItems(addresses)
+        self.ui.serverDataIp.clear()
+        self.ui.serverDataIp.addItems(addresses)
 
+        self.ui.cli_ControlIp.clear()
+        self.ui.cli_ControlIp.addItems(addresses)
+        self.ui.cli_DataIp.clear()
+        self.ui.cli_DataIp.addItems(addresses)
 
+        #Controller code
+        self.start_opt = True
+        
+        self.ui.getRadioButton_opt.clicked.connect(self.getRadio)
+        self.ui.componentList_opt.currentItemChanged.connect(self.updateParamTable_opt)
+        self.ui.applyChangesButton_opt.clicked.connect(self.reconfigRadio_opt)
+        self.ui.parameterTable_opt.setHorizontalHeaderLabels(["Name", "Value", "Optimize", "Range"])
+        self.ui.radioOptimizer_start.clicked.connect(self.optimizeRadio_start)
+        self.ui.radioOptimizer_stop.clicked.connect(self.optimizeRadio_stop)
+        self.ui.UpdateOptimizerPlot.clicked.connect(self.updateOptimizerPlot)
+        self.radioOptimizer = RadioOptimizer(self.radioConfig)
+        #Plot init for the optimizer graph
+        self.ui.optimizer_plot = self.radioOptimizer.add_plot()
+        self.ui.optimizer_plot.resize(620, 440)
+        self.ui.optimizer_plot.setParent(self.ui.qwtWidgetOptimizer)
+        signal.signal(signal.SIGALRM, self.receive_optimizer_alarm)
+
+        file_name = 'iris_default_configuration.xml'
+        tree = Config.parse(file_name)
+        self.cliConfig = tree.getroot()
+        self.ui.componentList_cli.currentItemChanged.connect(self.updateParamTable_cli)
+        self.ui.parameterTable_cli.setHorizontalHeaderLabels(["Name", "Value", "Optimize", "Range"])
+        self.ui.componentList_cli.clear()
+        
     ''' This function tries to initialize the activity thread object
         it's always save to call this, the object is only created once
     '''
@@ -339,6 +399,9 @@ class mainDialog(QtGui.QDialog):
                 #self.axes.axis([0, 512, -140, -70])
                 #self.canvas.draw()
 
+        # update the radio optimizer
+        if self.optimize:
+            self.cliOptimizer.accumulate(stats)
 
     def getRadio(self):
 
@@ -362,13 +425,160 @@ class mainDialog(QtGui.QDialog):
         # FIXME: change to tree view and add engines too
         # update component list
         self.ui.componentList.clear()
+        self.ui.componentList_opt.clear()
         for i in self.radioConfig.engines:
             for k in i.components:
                 self.ui.componentList.addItem(str(k.name))
+                self.ui.componentList_opt.addItem(str(k.name))
 
         # make first item active
         self.ui.componentList.setCurrentItem(self.ui.componentList.item(0))
+        self.ui.componentList_opt.setCurrentItem(self.ui.componentList_opt.item(0))
+        
+        #Call radio optimizer to fill its init config
+        if self.optimize:
+            self.radioOptimizer.update_config(self.radioConfig)
 
+    #Module to optimize the radio
+    
+    #Start the client
+    def startOptClient(self):
+        if self.optimize:
+            # get GUI parameters
+            clientControlIp = self.ui.cli_ControlIp.currentText()
+            clientDataIp = self.ui.cli_DataIp.currentText()
+
+            self.cliOptimizer.updateConfiguration(clientControlIp, clientDataIp)
+            self.cliOptimizer.start()
+        
+    def optimizeRadio_start(self):
+        if self.optimize:
+
+            # get GUI parameters
+            """
+            clientControlIp = self.ui.clientControlIp.currentText()
+            clientDataIp = self.ui.clientDataIp.currentText()
+
+            serverControlIp = self.ui.serverControlIp.text()
+            serverDataIp = self.ui.serverDataIp.text()
+            """
+            clientControlIp = self.ui.clientControlIp.text()
+            clientDataIp = self.ui.clientDataIp.text()
+
+            serverControlIp = self.ui.serverControlIp.currentText()
+            serverDataIp = self.ui.serverDataIp.currentText()
+
+            self.radioOptimizer.updateConfiguration(clientControlIp, clientDataIp, serverControlIp, serverDataIp)
+            
+            #Enable the the optimizer to run
+            self.radioOptimizer.start_optimizer()
+            #Start the thread only once
+            if self.start_opt: 
+                #Start the thread
+                self.radioOptimizer.start()
+                self.start_opt = False
+
+    def optimizeRadio_stop(self):
+        if self.optimize:
+            #Disable the optimizer
+            self.radioOptimizer.stop_optimizer()
+                        
+    #Updates the plot, when the button is clicked        
+    def updateOptimizerPlot(self):
+        if self.optimize:
+            #print 'Optimizer Plot...'
+            self.radioOptimizer.opt_plot.plotOptimizer(self.radioOptimizer.x_vals, self.radioOptimizer.y_vals, self.radioOptimizer.best_x, self.radioOptimizer.best_y)
+            #self.ui.best_config.setText(self.radioOptimizer.best_ind)
+            #print self.radioOptimizer.best_ind
+            self.ui.best_config.clear()
+            for i in self.radioOptimizer.best_ind:
+                    self.ui.best_config.addItem(str(i).replace(":", ", "))
+            
+    def receive_optimizer_alarm(self, signum, stack):
+        if self.optimize:
+            print '##Receive_optimizer_alarm'
+            self.radioOptimizer.opt_plot.plotOptimizer(self.radioOptimizer.x_vals, self.radioOptimizer.y_vals, self.radioOptimizer.best_x, self.radioOptimizer.best_y)
+            #signal.alarm(1)
+            
+    
+    def updateParamTable_opt(self):
+        #print "updateParamTable()"
+        if(self.radioConfig != 0):
+            # clear table
+            self.ui.parameterTable_opt.clearContents()
+            self.ui.parameterTable_opt.setRowCount(0)
+            # get current component
+            currentItem = self.ui.componentList_opt.currentItem().text()
+            for engine in self.radioConfig.engines:
+                for component in engine.components:
+                    if currentItem == component.name:
+                        for param in component.parameters:
+                            numRows = self.ui.parameterTable_opt.rowCount()
+                            self.ui.parameterTable_opt.insertRow(numRows)
+                            self.ui.parameterTable_opt.setItem(numRows, 0, QTableWidgetItem(param.name))
+                            self.ui.parameterTable_opt.setItem(numRows, 1, QTableWidgetItem(param.value))                          
+                            #Set the check boxes
+                            item = QTableWidgetItem("")
+                            item.setCheckState(QtCore.Qt.Unchecked);
+                            self.ui.parameterTable_opt.setItem(numRows, 2, item);
+                            #Fill the table with the default optimization values provided by default_list
+                            for x in self.radioOptimizer.default_list:
+                                if component.name == x.component and param.name == x.parameter:
+                                    self.ui.parameterTable_opt.setItem(numRows, 3, QTableWidgetItem(x.values))
+
+
+    def reconfigRadio_opt(self):
+        print "reconfigRadio called"
+        map = scl.generate_map("pySysMoCo")
+        radioconfigcontrol = map["radioconfcontrol"]
+
+        #Create request for radio reconfiguration
+        request = radioconfig_pb2.RadioConfigControl()
+        request.type = radioconfig_pb2.REQUEST
+        request.command = radioconfig_pb2.SET_RADIO_CONFIG
+
+        # get selected component and add to reconf request
+        currentComponent = self.ui.componentList_opt.currentItem()
+        print currentComponent.text()
+
+        #Set the GA values
+        self.radioOptimizer.NGEN = int(self.ui.NGEN.text())
+        self.radioOptimizer.NIND = int(self.ui.NIND.text())
+        self.radioOptimizer.CXPB = float(self.ui.CXPB.text())
+        self.radioOptimizer.MUTPB = float(self.ui.MUTPB.text())
+        
+        print "GA: ", self.ui.NGEN.text(), self.ui.NIND.text(), self.ui.CXPB.text(), self.ui.MUTPB.text()
+        # add engine and just use name of first
+        newEngine = request.radioconf.engines.add()
+
+        # find the engine the component lives in and set name
+        for engine in self.radioConfig.engines:
+            for component in engine.components:
+                if component.name == currentComponent.text():
+                    # create new engine in request object
+                    newEngine.name = engine.name
+
+        newComponent = newEngine.components.add()
+        newComponent.name = str(currentComponent.text())
+
+        # add all parameter that have changed
+        # FIXME: compare with self.radioConfig and really just update if changes
+        numRows = self.ui.parameterTable_opt.rowCount()
+        for row in xrange(0, numRows):
+            newParameter = newComponent.parameters.add()
+            # name is column 0
+            newParameter.name = str(self.ui.parameterTable_opt.item(row, 0).text())
+            # value is column 1
+            newParameter.value = str(self.ui.parameterTable_opt.item(row, 1).text())
+
+            if self.optimize and self.ui.parameterTable_opt.item(row, 2).checkState() == QtCore.Qt.Checked:
+                self.radioOptimizer.prepare_config(newEngine.name, newComponent.name, newParameter.name, str(self.ui.parameterTable_opt.item(row, 3).text()) )
+
+        #send request
+        string = request.SerializeToString()
+        radioconfigcontrol.send(string)
+        #wait for reply, fixme: check result
+        string = radioconfigcontrol.recv()
 
     def updateParamTable(self):
         #print "updateParamTable()"
@@ -432,6 +642,7 @@ class mainDialog(QtGui.QDialog):
         string = radioconfigcontrol.recv()
 
 
+
     def getNeighbortableRow(self, address):
         # find address in table and set row if found
         numRows = self.ui.neighborTable.rowCount()
@@ -487,6 +698,8 @@ class mainDialog(QtGui.QDialog):
             self.activityThread.stop()
         except:
             pass
+        self.cliOptimizer.stop()
+        self.radioOptimizer.stop()
         self.listenerPhyEvent.stop()
         self.listenerLinkLayerEvent.stop()
         self.close()
